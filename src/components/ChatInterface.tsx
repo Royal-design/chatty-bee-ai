@@ -12,7 +12,7 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from "./ui/sidebar";
-import { IoCreateOutline } from "react-icons/io5";
+import { TbMessageCirclePlus } from "react-icons/tb";
 import { Button } from "./ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
@@ -69,9 +69,9 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           <Button
             onClick={() => dispatch(createNewChat())}
             variant="ghost"
-            className="flex justify-end shrink-0"
+            className="flex justify-end cursor-pointer shrink-0"
           >
-            <IoCreateOutline className="size-7" />
+            <TbMessageCirclePlus className="size-7" />
           </Button>
         </SidebarHeader>
 

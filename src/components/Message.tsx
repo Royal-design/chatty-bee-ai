@@ -1,9 +1,11 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Clipboard } from "lucide-react";
+import chattyAi from "@/assets/chatty.png";
 
 interface MessageType {
   id: number;
@@ -22,7 +24,7 @@ export const Message = ({ message }: MessageProps) => {
   // Detect code block & extract language
   const codeBlockMatch = message.text.match(/```(\w+)?\n([\s\S]*?)```/);
   const isCode = !!codeBlockMatch;
-  const codeLanguage = codeBlockMatch?.[1] || "plaintext"; // Default to plaintext
+  const codeLanguage = codeBlockMatch?.[1] || "plaintext";
   const codeContent = codeBlockMatch?.[2] || message.text;
 
   // Copy to clipboard function
@@ -36,21 +38,26 @@ export const Message = ({ message }: MessageProps) => {
     <div>
       {message.type === "user" && (
         <div className="flex justify-end">
-          <Card className="shadow-sm rounded-sm w-sm">
-            <CardContent>
+          <Card className="shadow-sm py-0 rounded-2xl max-w-md">
+            <CardContent className="px-5 py-2">
               <p>{message.text}</p>
             </CardContent>
           </Card>
         </div>
       )}
       {message.type === "ai" && (
-        <div className="flex justify-start">
-          <Card className="shadow-sm rounded-sm w-sm p-3">
-            <CardContent>
+        <div className="flex gap-1 justify-start">
+          <img
+            src={chattyAi}
+            alt="ai"
+            className="size-8 rounded-full border p-1"
+          />
+          <Card className="shadow-none py-0 rounded-none border-none w-2xl">
+            <CardContent className="px-2 ">
               {isCode ? (
                 <div className="relative">
                   {/* Code Language Header */}
-                  <div className="flex justify-between items-center bg-gray-800 text-white px-4 py-2 rounded-t">
+                  <div className="flex justify-between items-center bg-gray-800 text-white px-4  rounded-t">
                     <span className="text-sm font-semibold">
                       {codeLanguage.toUpperCase()}
                     </span>
@@ -74,7 +81,9 @@ export const Message = ({ message }: MessageProps) => {
                   </SyntaxHighlighter>
                 </div>
               ) : (
-                <p>{message.text}</p>
+                <div className="prose">
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
+                </div>
               )}
             </CardContent>
           </Card>

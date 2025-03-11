@@ -1,3 +1,9 @@
+import { Navbar } from "./Navbar";
+
 export const ChatHeader = () => {
-  return <div>ChatHeader</div>;
+  return (
+    <div className="w-full">
+      <Navbar />
+    </div>
+  );
 };

@@ -20,14 +20,20 @@ interface ChatState {
   error: string | null;
   loading: boolean;
   aiLoading: boolean;
+  userId: string | null;
 }
 
-// Load state from localStorage
-const loadChatsFromStorage = (): ChatState => {
+// Generate storage key based on user ID
+const getStorageKey = (userId: string | null) => `chats-${userId || "guest"}`;
+
+// Load state from localStorage for a specific user
+const loadChatsFromStorage = (userId: string | null): ChatState => {
   try {
-    const storedChats = localStorage.getItem("chats");
-    const storedActiveChat = localStorage.getItem("activeChatId");
-    const storedModel = localStorage.getItem("model") || "gemini-2.0-flash";
+    const storageKey = getStorageKey(userId);
+    const storedChats = localStorage.getItem(storageKey);
+    const storedActiveChat = localStorage.getItem(`activeChatId-${userId}`);
+    const storedModel =
+      localStorage.getItem(`model-${userId}`) || "gemini-2.0-flash";
 
     const chats: Chat[] = storedChats ? JSON.parse(storedChats) : [];
     const activeChatId = storedActiveChat
@@ -42,7 +48,8 @@ const loadChatsFromStorage = (): ChatState => {
       model: storedModel,
       error: null,
       loading: false,
-      aiLoading: false
+      aiLoading: false,
+      userId
     };
   } catch (error) {
     console.error("Error loading chats:", error);
@@ -52,17 +59,24 @@ const loadChatsFromStorage = (): ChatState => {
       model: "gemini-2.0-flash",
       error: "Failed to load chats.",
       loading: false,
-      aiLoading: false
+      aiLoading: false,
+      userId
     };
   }
 };
 
-// Save state to localStorage
+// Save state to localStorage for the specific user
 const saveChatsToStorage = (state: ChatState): void => {
   try {
-    localStorage.setItem("chats", JSON.stringify(state.chats));
-    localStorage.setItem("activeChatId", JSON.stringify(state.activeChatId));
-    localStorage.setItem("model", state.model);
+    if (!state.userId) return; // Prevent saving if userId is null
+
+    const storageKey = getStorageKey(state.userId);
+    localStorage.setItem(storageKey, JSON.stringify(state.chats));
+    localStorage.setItem(
+      `activeChatId-${state.userId}`,
+      JSON.stringify(state.activeChatId)
+    );
+    localStorage.setItem(`model-${state.userId}`, state.model);
   } catch (error) {
     console.error("Error saving chats:", error);
   }
@@ -73,25 +87,31 @@ const generateChatId = (): string => `chat-${Date.now()}`;
 const generateMessageId = (messages: MessageProps[]): number =>
   messages.length ? messages[messages.length - 1].id + 1 : 1;
 
-// Load initial state
-const initialState: ChatState = loadChatsFromStorage();
-
-// Ensure at least one chat exists
-if (initialState.chats.length === 0) {
-  const newChat: Chat = {
-    id: generateChatId(),
-    messages: [],
-    timestamp: new Date().toISOString()
-  };
-  initialState.chats.push(newChat);
-  initialState.activeChatId = newChat.id;
-  saveChatsToStorage(initialState);
-}
+// Initial state
+const initialState: ChatState = {
+  chats: [],
+  activeChatId: null,
+  model: "gemini-2.0-flash",
+  error: null,
+  loading: false,
+  aiLoading: false,
+  userId: null
+};
 
 export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
+    // ✅ Set the user ID and load their chat history
+    setUserId: (state, action: PayloadAction<string | null>) => {
+      state.userId = action.payload;
+      const newState = loadChatsFromStorage(action.payload);
+      state.chats = newState.chats;
+      state.activeChatId = newState.activeChatId;
+      state.model = newState.model;
+      state.error = newState.error;
+    },
+
     createNewChat: (state) => {
       const newChat: Chat = {
         id: generateChatId(),
@@ -165,6 +185,7 @@ export const chatSlice = createSlice({
 });
 
 export const {
+  setUserId,
   createNewChat,
   setActiveChat,
   addMessage,

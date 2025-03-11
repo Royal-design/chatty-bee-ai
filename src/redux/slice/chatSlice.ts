@@ -3,25 +3,31 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface MessageProps {
   id: number;
   text: string;
-  type?: string;
+  type: "user" | "ai";
   timestamp: string;
 }
 
 interface Chat {
   id: string;
   messages: MessageProps[];
+  timestamp: string;
 }
 
 interface ChatState {
   chats: Chat[];
+  model: string;
   activeChatId: string | null;
   error: string | null;
+  loading: boolean;
+  aiLoading: boolean;
 }
 
+// Load state from localStorage
 const loadChatsFromStorage = (): ChatState => {
   try {
     const storedChats = localStorage.getItem("chats");
     const storedActiveChat = localStorage.getItem("activeChatId");
+    const storedModel = localStorage.getItem("model") || "gemini-2.0-flash";
 
     const chats: Chat[] = storedChats ? JSON.parse(storedChats) : [];
     const activeChatId = storedActiveChat
@@ -33,43 +39,53 @@ const loadChatsFromStorage = (): ChatState => {
     return {
       chats,
       activeChatId,
-      error: null
+      model: storedModel,
+      error: null,
+      loading: false,
+      aiLoading: false
     };
   } catch (error) {
-    console.error("Error loading chats from storage:", error);
+    console.error("Error loading chats:", error);
     return {
       chats: [],
       activeChatId: null,
-      error: null
+      model: "gemini-2.0-flash",
+      error: "Failed to load chats.",
+      loading: false,
+      aiLoading: false
     };
   }
 };
 
-const saveChatsToStorage = (chats: Chat[], activeChatId: string | null) => {
+// Save state to localStorage
+const saveChatsToStorage = (state: ChatState): void => {
   try {
-    const sanitizedChats = chats.map((chat) => ({
-      ...chat,
-      messages: chat.messages.map(({ ...msg }) => msg)
-    }));
-
-    localStorage.setItem("chats", JSON.stringify(sanitizedChats));
-    localStorage.setItem("activeChatId", JSON.stringify(activeChatId));
+    localStorage.setItem("chats", JSON.stringify(state.chats));
+    localStorage.setItem("activeChatId", JSON.stringify(state.activeChatId));
+    localStorage.setItem("model", state.model);
   } catch (error) {
-    console.error("Error saving chats to storage:", error);
+    console.error("Error saving chats:", error);
   }
 };
 
-const generateChatId = () => `chat-${Date.now()}`;
-const generateMessageId = (messages: MessageProps[]) =>
-  messages.length > 0 ? messages[messages.length - 1].id + 1 : 1;
+// ID Generators
+const generateChatId = (): string => `chat-${Date.now()}`;
+const generateMessageId = (messages: MessageProps[]): number =>
+  messages.length ? messages[messages.length - 1].id + 1 : 1;
 
+// Load initial state
 const initialState: ChatState = loadChatsFromStorage();
 
+// Ensure at least one chat exists
 if (initialState.chats.length === 0) {
-  const newChat: Chat = { id: generateChatId(), messages: [] };
+  const newChat: Chat = {
+    id: generateChatId(),
+    messages: [],
+    timestamp: new Date().toISOString()
+  };
   initialState.chats.push(newChat);
   initialState.activeChatId = newChat.id;
-  saveChatsToStorage(initialState.chats, initialState.activeChatId);
+  saveChatsToStorage(initialState);
 }
 
 export const chatSlice = createSlice({
@@ -77,25 +93,35 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     createNewChat: (state) => {
-      const newChat: Chat = { id: generateChatId(), messages: [] };
+      const newChat: Chat = {
+        id: generateChatId(),
+        messages: [],
+        timestamp: new Date().toISOString()
+      };
       state.chats.unshift(newChat);
       state.activeChatId = newChat.id;
-      saveChatsToStorage(state.chats, state.activeChatId);
+      saveChatsToStorage(state);
     },
 
     setActiveChat: (state, action: PayloadAction<string>) => {
+      if (!state.chats.some((chat) => chat.id === action.payload)) {
+        state.error = "Chat not found.";
+        return;
+      }
       state.activeChatId = action.payload;
-      saveChatsToStorage(state.chats, state.activeChatId);
+      saveChatsToStorage(state);
     },
 
     addMessage: (
       state,
-      action: PayloadAction<{
-        text: string;
-      }>
+      action: PayloadAction<{ text: string; type: "user" | "ai" }>
     ) => {
       if (!state.activeChatId) {
-        const newChat: Chat = { id: generateChatId(), messages: [] };
+        const newChat: Chat = {
+          id: generateChatId(),
+          messages: [],
+          timestamp: new Date().toISOString()
+        };
         state.chats.unshift(newChat);
         state.activeChatId = newChat.id;
       }
@@ -106,25 +132,34 @@ export const chatSlice = createSlice({
       chat.messages.push({
         id: generateMessageId(chat.messages),
         text: action.payload.text,
-        type: "user",
+        type: action.payload.type,
         timestamp: new Date().toISOString()
       });
 
-      saveChatsToStorage(state.chats, state.activeChatId);
+      saveChatsToStorage(state);
     },
 
     deleteChat: (state, action: PayloadAction<string>) => {
       state.chats = state.chats.filter((chat) => chat.id !== action.payload);
-
-      if (state.activeChatId === action.payload) {
-        state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
-      }
-
-      saveChatsToStorage(state.chats, state.activeChatId);
+      state.activeChatId = state.chats.length ? state.chats[0].id : null;
+      saveChatsToStorage(state);
     },
 
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+    },
+
+    setModel: (state, action: PayloadAction<string>) => {
+      state.model = action.payload;
+      saveChatsToStorage(state);
+    },
+
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+
+    setAiLoading: (state, action: PayloadAction<boolean>) => {
+      state.aiLoading = action.payload;
     }
   }
 });
@@ -134,5 +169,8 @@ export const {
   setActiveChat,
   addMessage,
   deleteChat,
-  setError
+  setError,
+  setModel,
+  setLoading,
+  setAiLoading
 } = chatSlice.actions;

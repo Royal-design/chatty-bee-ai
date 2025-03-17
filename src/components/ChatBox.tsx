@@ -1,25 +1,48 @@
+import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "@/redux/store";
 import { ChatHeader } from "./ChatHeader";
 import { ChatMessage } from "./ChatMessage";
 import { TextInput } from "./TextInput";
-import { useEffect, useRef } from "react";
 
 export const ChatBox = () => {
   const { chats, activeChatId, aiLoading } = useAppSelector(
     (state) => state.chat
   );
 
-  // Ensure we are fetching the correct chat for the user
   const activeChat =
     chats.find((chat) => chat.id === activeChatId) || chats[0] || null;
   const messages = activeChat ? activeChat.messages : [];
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isUserScrolling = useRef(false);
+  const [prevMessageCount, setPrevMessageCount] = useState(messages.length);
 
-  // Auto-scroll to the latest message when messages update
+  // Scroll to bottom function
+  const scrollToBottom = () => {
+    chatContainerRef.current?.scrollTo({
+      top: chatContainerRef.current.scrollHeight,
+      behavior: "smooth"
+    });
+  };
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, activeChatId]); // Depend on `messages` and `activeChatId`
+    const chatContainer = chatContainerRef.current;
+    if (!chatContainer) return;
+
+    const newMessageArrived = messages.length > prevMessageCount;
+    setPrevMessageCount(messages.length);
+
+    if (newMessageArrived) {
+      if (!isUserScrolling.current) {
+        scrollToBottom();
+      }
+    }
+  }, [messages]);
+
+  // Scroll to bottom on reload
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   return (
     <div className="h-full flex flex-col">
@@ -28,10 +51,12 @@ export const ChatBox = () => {
       </div>
 
       {messages.length > 0 ? (
-        <div className="py-2 h-full overflow-auto w-full mb-4 flex justify-center scrollbar-hidden">
+        <div
+          ref={chatContainerRef}
+          className="py-2 h-full overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
+        >
           <div className="w-2xl">
-            <ChatMessage />
-            {/* <div ref={messagesEndRef}></div> */}
+            <ChatMessage messages={messages} />
             {aiLoading && (
               <div className="flex justify-center mt-2">
                 <p className="text-sm text-gray-500 animate-pulse">
@@ -49,7 +74,7 @@ export const ChatBox = () => {
 
       <div className="pb-4 flex justify-center">
         <div className="w-2xl">
-          <TextInput />
+          <TextInput scrollToBottom={scrollToBottom} />
         </div>
       </div>
     </div>

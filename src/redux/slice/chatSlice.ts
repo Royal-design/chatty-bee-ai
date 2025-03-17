@@ -102,7 +102,6 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    // ✅ Set the user ID and load their chat history
     setUserId: (state, action: PayloadAction<string | null>) => {
       state.userId = action.payload;
       const newState = loadChatsFromStorage(action.payload);

@@ -9,7 +9,12 @@ import { generateAIResponse } from "@/Api/model";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { addMessage, setAiLoading } from "@/redux/slice/chatSlice";
 
-export const TextInput = () => {
+// Define props for the component
+interface TextInputProps {
+  scrollToBottom?: () => void;
+}
+
+export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   const dispatch = useAppDispatch();
   const { model } = useAppSelector((state) => state.chat);
 
@@ -24,6 +29,10 @@ export const TextInput = () => {
 
     try {
       form.reset();
+      if (scrollToBottom) {
+        scrollToBottom();
+      }
+
       const aiResponse = await generateAIResponse(
         data.text,
         model || "gemini-2.0-flash"

@@ -62,10 +62,10 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <Sidebar collapsible="offcanvas" className="max-w-md">
-        <SidebarHeader className="border-b dark:border-slate-800 duration-75 transition md:hidden">
+        <SidebarHeader className="border-b dark:border-slate-800  md:hidden">
           <h2 className="text-lg font-semibold text-center">Chat Menu</h2>
         </SidebarHeader>
-        <SidebarHeader className="border-b p-2 h-[3rem] dark:border-slate-800 duration-75 transition">
+        <SidebarHeader className="border-b px-2 py-2 h-16 dark:border-slate-800 ">
           <Button
             onClick={() => dispatch(createNewChat())}
             variant="ghost"
@@ -75,41 +75,46 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </Button>
         </SidebarHeader>
 
-        <SidebarContent className="bg-background duration-75 transition text-primary">
+        <SidebarContent className="bg-background text-primary">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="flex flex-col gap-2">
+              <SidebarMenu className="">
                 {Object.entries(groupedChats).map(([dateLabel, chats]) => (
                   <div key={dateLabel}>
                     <p className="font-semibold text-gray-500">{dateLabel}</p>
-                    {chats.map((chat) => (
-                      <SidebarMenuItem key={chat.id} className="flex flex-col">
-                        <div className="flex justify-between">
-                          <SidebarMenuButton
-                            onClick={() => {
-                              dispatch(setActiveChat(chat.id));
-                              navigate(`/chats/${activeChatId}`);
-                            }}
-                            className={`flex-grow flex items-center gap-2 p-2 rounded transition ${
-                              activeChatId === chat.id
-                                ? "bg-button hover:bg-button-hover"
-                                : ""
-                            }`}
-                          >
-                            <span>
-                              Chat - {chat.messages[0]?.text || "New Chat"}
-                            </span>
-                          </SidebarMenuButton>
+                    <div className="flex flex-col gap-2">
+                      {chats.map((chat) => (
+                        <SidebarMenuItem
+                          key={chat.id}
+                          className={`flex flex-col hover:bg-gray-200  dark:hover:bg-gray-700 rounded transition ${
+                            activeChatId === chat.id
+                              ? "bg-gray-200  dark:bg-gray-700"
+                              : ""
+                          }`}
+                        >
+                          <div className="flex justify-between">
+                            <SidebarMenuButton
+                              onClick={() => {
+                                dispatch(setActiveChat(chat.id));
+                                navigate(`/chats/${chat.id}`);
+                              }}
+                              className="flex-grow hover:bg-transparent active:bg-transparent flex items-center gap-2 p-2"
+                            >
+                              <span>
+                                Chat - {chat.messages[0]?.text || "New Chat"}
+                              </span>
+                            </SidebarMenuButton>
 
-                          <button
-                            onClick={() => dispatch(deleteChat(chat.id))}
-                            className="p-1 hover:bg-red-100 rounded"
-                          >
-                            <Trash2 size={16} className="text-red-500" />
-                          </button>
-                        </div>
-                      </SidebarMenuItem>
-                    ))}
+                            <button
+                              onClick={() => dispatch(deleteChat(chat.id))}
+                              className="p-1 hover:bg-red-100 rounded"
+                            >
+                              <Trash2 size={16} className="text-red-500" />
+                            </button>
+                          </div>
+                        </SidebarMenuItem>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </SidebarMenu>

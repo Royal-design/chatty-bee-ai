@@ -26,22 +26,11 @@ export const themeSlice = createSlice({
       state.theme = action.payload;
       localStorage.setItem("theme", action.payload);
       applyTheme(action.payload);
-    },
-    toggleTheme: (state) => {
-      if (state.theme === "light") {
-        state.theme = "dark";
-      } else if (state.theme === "dark") {
-        state.theme = "system";
-      } else {
-        state.theme = "light";
-      }
-      localStorage.setItem("theme", state.theme);
-      applyTheme(state.theme);
     }
   }
 });
 
-export const { setTheme, toggleTheme } = themeSlice.actions;
+export const { setTheme } = themeSlice.actions;
 export default themeSlice.reducer;
 
 // Function to apply the theme to Tailwind

@@ -21,6 +21,9 @@ interface ChatState {
   loading: boolean;
   aiLoading: boolean;
   userId: string | null;
+  reloadMessages: boolean;
+  lastUserMessage: string | null;
+  isTyping: boolean; // ✅ Tracks if AI is generating a response
 }
 
 // Generate storage key based on user ID
@@ -49,7 +52,10 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       error: null,
       loading: false,
       aiLoading: false,
-      userId
+      userId,
+      reloadMessages: false,
+      lastUserMessage: null,
+      isTyping: false // ✅ Initially false
     };
   } catch (error) {
     console.error("Error loading chats:", error);
@@ -60,16 +66,18 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       error: "Failed to load chats.",
       loading: false,
       aiLoading: false,
-      userId
+      userId,
+      reloadMessages: false,
+      lastUserMessage: null,
+      isTyping: false // ✅ Initially false
     };
   }
 };
 
-// Save state to localStorage for the specific user
+// Save state to localStorage
 const saveChatsToStorage = (state: ChatState): void => {
   try {
-    if (!state.userId) return; // Prevent saving if userId is null
-
+    if (!state.userId) return;
     const storageKey = getStorageKey(state.userId);
     localStorage.setItem(storageKey, JSON.stringify(state.chats));
     localStorage.setItem(
@@ -95,7 +103,10 @@ const initialState: ChatState = {
   error: null,
   loading: false,
   aiLoading: false,
-  userId: null
+  userId: null,
+  reloadMessages: false,
+  lastUserMessage: null,
+  isTyping: false // ✅ Initially false
 };
 
 export const chatSlice = createSlice({
@@ -155,6 +166,15 @@ export const chatSlice = createSlice({
         timestamp: new Date().toISOString()
       });
 
+      if (action.payload.type === "user") {
+        state.lastUserMessage = action.payload.text;
+      }
+
+      // ✅ AI starts typing
+      if (action.payload.type === "ai") {
+        state.isTyping = true;
+      }
+
       saveChatsToStorage(state);
     },
 
@@ -170,6 +190,40 @@ export const chatSlice = createSlice({
 
     setModel: (state, action: PayloadAction<string>) => {
       state.model = action.payload;
+      state.reloadMessages = !state.reloadMessages;
+
+      if (state.lastUserMessage) {
+        state.aiLoading = true;
+      }
+
+      saveChatsToStorage(state);
+    },
+
+    regenerateAIMessage: (state, action: PayloadAction<string>) => {
+      if (!state.activeChatId || !state.lastUserMessage) return;
+
+      const chat = state.chats.find((chat) => chat.id === state.activeChatId);
+      if (!chat) return;
+
+      const lastAiMessageIndex = chat.messages
+        .slice()
+        .reverse()
+        .findIndex((msg) => msg.type === "ai");
+
+      if (lastAiMessageIndex !== -1) {
+        const originalIndex = chat.messages.length - 1 - lastAiMessageIndex;
+        chat.messages[originalIndex].text = action.payload;
+      } else {
+        chat.messages.push({
+          id: generateMessageId(chat.messages),
+          text: action.payload,
+          type: "ai",
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      state.isTyping = false; // ✅ AI stops typing
+      state.aiLoading = false;
       saveChatsToStorage(state);
     },
 
@@ -179,6 +233,10 @@ export const chatSlice = createSlice({
 
     setAiLoading: (state, action: PayloadAction<boolean>) => {
       state.aiLoading = action.payload;
+    },
+
+    setIsTyping: (state, action: PayloadAction<boolean>) => {
+      state.isTyping = action.payload;
     }
   }
 });
@@ -192,5 +250,8 @@ export const {
   setError,
   setModel,
   setLoading,
-  setAiLoading
+  setAiLoading,
+  regenerateAIMessage,
+  setIsTyping
 } = chatSlice.actions;
+export default chatSlice.reducer;

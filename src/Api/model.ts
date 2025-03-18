@@ -1,5 +1,5 @@
 import { genAI } from "../Api/api";
-// Define input types
+
 type AIInput = string | File;
 
 export async function generateAIResponse(
@@ -9,7 +9,6 @@ export async function generateAIResponse(
   try {
     const model = genAI.getGenerativeModel({ model: modelName });
 
-    // Validate input (text or file)
     let requestPayload: string;
     if (typeof input === "string") {
       if (!input.trim()) throw new Error("Text input cannot be empty.");
@@ -22,15 +21,26 @@ export async function generateAIResponse(
       );
     }
 
-    // Call AI model
-    const result = await model.generateContent(requestPayload);
+    // ✅ Use a system prompt to make AI act naturally
+    const systemPrompt = `
+      You are a friendly and conversational AI assistant. Follow the conversation flow naturally. 
+      - **Acknowledge** user intent before responding.
+      - **Engage actively** instead of just rewording their message.
+      - **Avoid repetition** and give fresh, natural responses.
+      - **Provide helpful and clear answers** based on context.
+      - **If the user greets you, greet them back warmly.**
+      - **If they ask for coding help, respond accordingly.**
+      - **If they mention math, guide them into solving equations.**
+      - **Keep track of previous responses to maintain conversation flow.**
+    `;
 
-    // Validate AI response
+    const result = await model.generateContent([systemPrompt, requestPayload]);
+
     if (!result?.response?.text) {
       throw new Error("Unexpected response format from AI.");
     }
 
-    return result.response.text();
+    return result.response.text().trim();
   } catch (error) {
     return handleAIError(error);
   }
@@ -56,7 +66,6 @@ async function processFile(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    // Convert text to string, images/audio to base64
     reader.onload = () => {
       if (file.type.startsWith("text/")) {
         resolve(reader.result as string);

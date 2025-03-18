@@ -25,7 +25,7 @@ import { useAppDispatch } from "@/redux/store";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, loginWithGoogle } from "@/redux/slice/authSlice";
 import { toast } from "sonner";
-import { AuthSpinner } from "@/components/ui/authSpinner";
+import { AuthLoader } from "@/components/ui/AuthLoader";
 
 export const LoginPage = () => {
   const [loadingLogin, setLoadingLogin] = useState(false);
@@ -131,7 +131,7 @@ export const LoginPage = () => {
               type="submit"
               className="w-full  duration-200 cursor-pointer"
             >
-              {loadingLogin ? <AuthSpinner /> : "Login"}
+              {loadingLogin ? <AuthLoader /> : "Login"}
             </Button>
             <Button
               disabled={loadingLogin || loadingGoogle}
@@ -140,7 +140,7 @@ export const LoginPage = () => {
               className="w-full cursor-pointer hove duration-200 border"
             >
               {loadingGoogle ? (
-                <AuthSpinner />
+                <AuthLoader />
               ) : (
                 <div className="items-center flex ">
                   <img src={googleImage} className="w-[2rem]" />

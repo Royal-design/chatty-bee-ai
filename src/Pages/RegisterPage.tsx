@@ -26,7 +26,7 @@ import chattLogo from "../assets/chatty.png";
 
 import { toast } from "sonner";
 import { registerUser } from "@/redux/slice/authSlice";
-import { AuthSpinner } from "@/components/ui/authSpinner";
+import { AuthLoader } from "@/components/ui/AuthLoader";
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ export const RegisterPage = () => {
               type="submit"
               className="w-full border "
             >
-              {form.formState.isSubmitting ? <AuthSpinner /> : "Register"}
+              {form.formState.isSubmitting ? <AuthLoader /> : "Register"}
             </Button>
             <p className=" text-sm mt-2">
               {" "}

@@ -5,7 +5,7 @@ import { ChatMessage } from "./ChatMessage";
 import { TextInput } from "./TextInput";
 
 export const ChatBox = () => {
-  const { chats, activeChatId, aiLoading } = useAppSelector(
+  const { chats, activeChatId, aiLoading, reloadMessages } = useAppSelector(
     (state) => state.chat
   );
 
@@ -39,10 +39,9 @@ export const ChatBox = () => {
     }
   }, [messages]);
 
-  // Scroll to bottom on reload
   useEffect(() => {
     scrollToBottom();
-  }, []);
+  }, [reloadMessages]);
 
   return (
     <div className="h-full flex flex-col">

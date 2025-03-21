@@ -3,6 +3,8 @@ import { useAppSelector } from "@/redux/store";
 import { ChatHeader } from "./ChatHeader";
 import { ChatMessage } from "./ChatMessage";
 import { TextInput } from "./TextInput";
+import { Button } from "./ui/button";
+import { ArrowDown } from "lucide-react";
 
 export const ChatBox = () => {
   const { chats, activeChatId, aiLoading, reloadMessages } = useAppSelector(
@@ -16,6 +18,7 @@ export const ChatBox = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const isUserScrolling = useRef(false);
   const [prevMessageCount, setPrevMessageCount] = useState(messages.length);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   // Scroll to bottom function
   const scrollToBottom = () => {
@@ -29,13 +32,27 @@ export const ChatBox = () => {
     const chatContainer = chatContainerRef.current;
     if (!chatContainer) return;
 
+    const handleScroll = () => {
+      const isAtBottom =
+        chatContainer.scrollHeight - chatContainer.scrollTop <=
+        chatContainer.clientHeight + 10;
+
+      setShowScrollButton(!isAtBottom);
+    };
+
+    chatContainer.addEventListener("scroll", handleScroll);
+    return () => chatContainer.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const chatContainer = chatContainerRef.current;
+    if (!chatContainer) return;
+
     const newMessageArrived = messages.length > prevMessageCount;
     setPrevMessageCount(messages.length);
 
-    if (newMessageArrived) {
-      if (!isUserScrolling.current) {
-        scrollToBottom();
-      }
+    if (newMessageArrived && !isUserScrolling.current) {
+      scrollToBottom();
     }
   }, [messages]);
 
@@ -44,7 +61,7 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col relative">
       <div className="border-b flex items-center">
         <ChatHeader />
       </div>
@@ -56,6 +73,7 @@ export const ChatBox = () => {
         >
           <div className="w-2xl">
             <ChatMessage messages={messages} />
+
             {aiLoading && (
               <div className="flex justify-center mt-2">
                 <p className="text-sm text-gray-500 animate-pulse">
@@ -70,7 +88,14 @@ export const ChatBox = () => {
           <h2 className="text-4xl text-center">What can I help you with?</h2>
         </div>
       )}
-
+      {showScrollButton && (
+        <Button
+          onClick={scrollToBottom}
+          className="absolute bottom-40 left-1/2 size-6 p-2 bg-transparent border dark:border-white border-black hover:bg-transparent rounded-full shadow-lg flex items-center justify-center transition-all duration-300"
+        >
+          <ArrowDown className="size-3 dark:text-white text-black" />
+        </Button>
+      )}
       <div className="pb-4 flex justify-center">
         <div className="w-2xl">
           <TextInput scrollToBottom={scrollToBottom} />

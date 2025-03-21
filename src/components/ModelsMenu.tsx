@@ -25,9 +25,12 @@ export const ModelsMenu = () => {
             lastUserMessage,
             newModel
           );
-          dispatch(regenerateAIMessage(aiResponse)); // ✅ Properly update the last AI message
+          console.log(lastUserMessage);
+          console.log(aiResponse);
+
+          dispatch(regenerateAIMessage(aiResponse));
         }
-      }, 100); // Small delay to allow Redux state to update
+      }, 100);
     }
   };
 

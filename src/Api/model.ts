@@ -1,6 +1,6 @@
 import { genAI } from "../Api/api";
 
-type AIInput = string | File;
+type AIInput = string | { url: string; type: string };
 
 export async function generateAIResponse(
   input: AIInput,
@@ -10,28 +10,26 @@ export async function generateAIResponse(
     const model = genAI.getGenerativeModel({ model: modelName });
 
     let requestPayload: string;
+
     if (typeof input === "string") {
       if (!input.trim()) throw new Error("Text input cannot be empty.");
       requestPayload = input;
-    } else if (input instanceof File) {
-      requestPayload = await processFile(input);
+    } else if (typeof input === "object" && input.url) {
+      // ✅ Convert image input into a valid AI prompt
+      requestPayload = `Here is an image: ${input.url}. Please analyze it and provide relevant information.`;
     } else {
-      throw new Error(
-        "Invalid input type. Please provide text, audio, or an image."
-      );
+      throw new Error("Invalid input type. Please provide text or an image.");
     }
 
-    // ✅ Use a system prompt to make AI act naturally
+    // ✅ Improved system prompt for AI behavior
     const systemPrompt = `
-      You are a friendly and conversational AI assistant. Follow the conversation flow naturally. 
-      - **Acknowledge** user intent before responding.
+      You are an intelligent AI assistant. Follow these guidelines:
+      - **Acknowledge user intent** before responding.
       - **Engage actively** instead of just rewording their message.
-      - **Avoid repetition** and give fresh, natural responses.
-      - **Provide helpful and clear answers** based on context.
-      - **If the user greets you, greet them back warmly.**
-      - **If they ask for coding help, respond accordingly.**
-      - **If they mention math, guide them into solving equations.**
-      - **Keep track of previous responses to maintain conversation flow.**
+      - **Avoid repetition** and provide useful, natural responses.
+      - **If given an image, describe its content and assist accordingly.**
+      - **For text, provide clear, insightful, and structured responses.**
+      - **Adapt responses based on context (math, coding, general help, etc.).**
     `;
 
     const result = await model.generateContent([systemPrompt, requestPayload]);
@@ -46,49 +44,9 @@ export async function generateAIResponse(
   }
 }
 
-async function processFile(file: File): Promise<string> {
-  if (!file) throw new Error("No file provided.");
-
-  const allowedTypes = [
-    "text/plain",
-    "audio/mpeg",
-    "audio/wav",
-    "image/jpeg",
-    "image/png",
-    "image/webp"
-  ];
-  if (!allowedTypes.includes(file.type)) {
-    throw new Error(
-      "Unsupported file type. Please upload a text, audio, or image file."
-    );
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (file.type.startsWith("text/")) {
-        resolve(reader.result as string);
-      } else {
-        resolve(`data:${file.type};base64,${btoa(reader.result as string)}`);
-      }
-    };
-
-    reader.onerror = () => reject(new Error("Error reading the file."));
-
-    if (file.type.startsWith("text/")) {
-      reader.readAsText(file);
-    } else {
-      reader.readAsDataURL(file);
-    }
-  });
-}
-
 function handleAIError(error: unknown): string {
-  if (error instanceof Error) {
-    console.error("AI Error:", error.message);
-    return error.message;
-  }
-  console.error("Unexpected Error:", error);
-  return "An unexpected error occurred.";
+  console.error("AI Error:", error);
+  return error instanceof Error
+    ? error.message
+    : "An unexpected error occurred.";
 }

@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Check } from "lucide-react";
+import { TypeAnimation } from "react-type-animation";
 import chattyAi from "@/assets/chatty.png";
 import { GoCopy } from "react-icons/go";
 import { ModelsMenu } from "./ModelsMenu";
@@ -17,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setIsTyping } from "@/redux/slice/chatSlice";
 
 interface MessageType {
+  image?: string;
   id: number;
   text: string;
   type: string;
@@ -29,10 +31,9 @@ interface MessageProps {
 
 export const Message = ({ message }: MessageProps) => {
   const [copied, setCopied] = useState(false);
-  const [displayedText, setDisplayedText] = useState(message.text);
   const dispatch = useAppDispatch();
   const { isTyping, aiLoading } = useAppSelector((state) => state.chat);
-
+  const currentModel = useAppSelector((state) => state.chat.model);
   const messageRef = useRef<HTMLDivElement | null>(null);
   const activeChat = useAppSelector((state) =>
     state.chat.chats.find((chat) => chat.id === state.chat.activeChatId)
@@ -56,46 +57,24 @@ export const Message = ({ message }: MessageProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // ✅ Typewriter effect & scroll while typing
-  useEffect(() => {
-    if (message.type === "ai" && isLastAiMessage) {
-      setDisplayedText("");
-      let index = 0;
-      const chunkSize = 2;
-
-      dispatch(setIsTyping(true));
-
-      const interval = setInterval(() => {
-        if (index < message.text.length) {
-          setDisplayedText(
-            (prev) => prev + message.text.slice(index, index + chunkSize)
-          );
-          index += chunkSize;
-
-          messageRef.current?.scrollIntoView({ behavior: "smooth" });
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            dispatch(setIsTyping(false));
-          }, 300);
-        }
-      }, 15);
-
-      return () => clearInterval(interval);
-    } else {
-      setDisplayedText(message.text);
-    }
-  }, [message.text, message.type, dispatch, isLastAiMessage]);
-
-  // ✅ Ensure scrolling after typing ends
+  // Ensure scrolling after typing ends
   useEffect(() => {
     if (!isTyping && isLastAiMessage) {
       messageRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isTyping, isLastAiMessage]);
+  }, [isTyping, isLastAiMessage, currentModel]);
 
   return (
     <div ref={messageRef}>
+      {message.type === "user" && message.image && (
+        <div className="flex justify-end">
+          <img
+            src={message.image}
+            alt="image"
+            className="h-20 w-20 rounded-md"
+          />
+        </div>
+      )}
       {message.type === "user" && (
         <div className="flex justify-end">
           <Card className="shadow-sm py-0 rounded-2xl max-w-md">
@@ -105,6 +84,7 @@ export const Message = ({ message }: MessageProps) => {
           </Card>
         </div>
       )}
+
       {message.type === "ai" && (
         <div className="flex gap-2 justify-start items-start">
           <img
@@ -150,12 +130,31 @@ export const Message = ({ message }: MessageProps) => {
                 </div>
               ) : (
                 <div className="prose dark:prose-invert leading-[200%]">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                  >
-                    {displayedText}
-                  </ReactMarkdown>
+                  {isLastAiMessage ? (
+                    <TypeAnimation
+                      key={message.text}
+                      sequence={[
+                        () => {
+                          dispatch(setIsTyping(true));
+                        },
+                        message.text,
+                        () => {
+                          dispatch(setIsTyping(false));
+                        }
+                      ]}
+                      speed={99}
+                      cursor={false}
+                      wrapper="span"
+                    />
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                    >
+                      {message.text}
+                    </ReactMarkdown>
+                  )}
+
                   {isLastAiMessage && !isTyping && !aiLoading && (
                     <div className="flex gap-2 items-center w-full">
                       <Tooltip>

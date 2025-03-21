@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface MessageProps {
   id: number;
   text: string;
+  image?: string; // 🔹 Added image field (optional)
   type: "user" | "ai";
   timestamp: string;
 }
@@ -144,7 +145,11 @@ export const chatSlice = createSlice({
 
     addMessage: (
       state,
-      action: PayloadAction<{ text: string; type: "user" | "ai" }>
+      action: PayloadAction<{
+        text: string;
+        image?: string;
+        type: "user" | "ai";
+      }>
     ) => {
       if (!state.activeChatId) {
         const newChat: Chat = {
@@ -162,6 +167,7 @@ export const chatSlice = createSlice({
       chat.messages.push({
         id: generateMessageId(chat.messages),
         text: action.payload.text,
+        image: action.payload.image || undefined,
         type: action.payload.type,
         timestamp: new Date().toISOString()
       });

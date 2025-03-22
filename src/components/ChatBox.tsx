@@ -61,7 +61,7 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full flex flex-col relative">
+    <div className="h-full  flex flex-col relative">
       <div className="border-b flex items-center">
         <ChatHeader />
       </div>
@@ -72,7 +72,11 @@ export const ChatBox = () => {
           className="py-2 h-full overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
         >
           <div className="w-2xl">
-            <ChatMessage messages={messages} />
+            <ChatMessage
+              messages={messages}
+              scrollToBottom={scrollToBottom}
+              showScrollButton={showScrollButton}
+            />
 
             {aiLoading && (
               <div className="flex justify-center mt-2">
@@ -88,14 +92,7 @@ export const ChatBox = () => {
           <h2 className="text-4xl text-center">What can I help you with?</h2>
         </div>
       )}
-      {showScrollButton && (
-        <Button
-          onClick={scrollToBottom}
-          className="absolute bottom-40 left-1/2 size-6 p-2 bg-transparent border dark:border-white border-black hover:bg-transparent rounded-full shadow-lg flex items-center justify-center transition-all duration-300"
-        >
-          <ArrowDown className="size-3 dark:text-white text-black" />
-        </Button>
-      )}
+
       <div className="pb-4 flex justify-center">
         <div className="w-2xl">
           <TextInput scrollToBottom={scrollToBottom} />

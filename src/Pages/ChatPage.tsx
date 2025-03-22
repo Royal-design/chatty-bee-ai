@@ -5,7 +5,7 @@ import { useAppSelector } from "@/redux/store";
 export const ChatPage = () => {
   const activeChatId = useAppSelector((state) => state.chat.activeChatId);
   return (
-    <div className="h-full">
+    <div className="h-full ">
       <ChatInterface>
         {activeChatId ? <ChatBox /> : <p> No chat</p>}
       </ChatInterface>

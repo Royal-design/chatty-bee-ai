@@ -9,13 +9,15 @@ import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Check } from "lucide-react";
+import { Check, Play, Pause } from "lucide-react";
 import { TypeAnimation } from "react-type-animation";
 import chattyAi from "@/assets/chatty.png";
 import { GoCopy } from "react-icons/go";
 import { ModelsMenu } from "./ModelsMenu";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setIsTyping } from "@/redux/slice/chatSlice";
+import { HiSpeakerWave } from "react-icons/hi2";
+import { IoStopCircle } from "react-icons/io5";
 
 interface MessageType {
   image?: string;
@@ -31,9 +33,13 @@ interface MessageProps {
 
 export const Message = ({ message }: MessageProps) => {
   const [copied, setCopied] = useState(false);
+  const [showFormatted, setShowFormatted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+
   const dispatch = useAppDispatch();
   const { isTyping, aiLoading } = useAppSelector((state) => state.chat);
-  const currentModel = useAppSelector((state) => state.chat.model);
   const messageRef = useRef<HTMLDivElement | null>(null);
   const activeChat = useAppSelector((state) =>
     state.chat.chats.find((chat) => chat.id === state.chat.activeChatId)
@@ -57,42 +63,44 @@ export const Message = ({ message }: MessageProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Ensure scrolling after typing ends
+  const toggleSpeech = () => {
+    if (!speechRef.current) {
+      speechRef.current = new SpeechSynthesisUtterance(message.text);
+      speechRef.current.onend = () => setIsSpeaking(false);
+    }
+
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      window.speechSynthesis.speak(speechRef.current);
+      setIsSpeaking(true);
+    }
+  };
+
   useEffect(() => {
     if (!isTyping && isLastAiMessage) {
       messageRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [isTyping, isLastAiMessage, currentModel]);
+
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, [isTyping, isLastAiMessage]);
 
   return (
     <div ref={messageRef}>
-      {message.type === "user" && message.image && (
-        <div className="flex justify-end">
-          <img
-            src={message.image}
-            alt="image"
-            className="h-20 w-20 rounded-md"
-          />
-        </div>
-      )}
-      {message.type === "user" && (
-        <div className="flex justify-end">
-          <Card className="shadow-sm py-0 rounded-2xl max-w-md">
-            <CardContent className="px-5 py-2">
-              <p>{message.text}</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
       {message.type === "ai" && (
-        <div className="flex gap-2 justify-start items-start">
+        <div
+          className="flex gap-2 justify-start items-start relative"
+          onClick={() => setIsHovered(!isHovered)}
+        >
           <img
             src={chattyAi}
             alt="AI"
             className="size-7 rounded-full border p-1"
           />
-          <Card className="shadow-md py-0 rounded-2xl border-none max-w-2xl">
+          <Card className="shadow-none py-0 rounded-2xl border-none max-w-2xl">
             <CardContent className="px-4 py-1">
               {isCode ? (
                 <div className="relative flex flex-col">
@@ -130,7 +138,7 @@ export const Message = ({ message }: MessageProps) => {
                 </div>
               ) : (
                 <div className="prose dark:prose-invert leading-[200%]">
-                  {isLastAiMessage ? (
+                  {isLastAiMessage && !showFormatted ? (
                     <TypeAnimation
                       key={message.text}
                       sequence={[
@@ -140,6 +148,7 @@ export const Message = ({ message }: MessageProps) => {
                         message.text,
                         () => {
                           dispatch(setIsTyping(false));
+                          setShowFormatted(true);
                         }
                       ]}
                       speed={99}
@@ -155,8 +164,9 @@ export const Message = ({ message }: MessageProps) => {
                     </ReactMarkdown>
                   )}
 
-                  {isLastAiMessage && !isTyping && !aiLoading && (
-                    <div className="flex gap-2 items-center w-full">
+                  {((isLastAiMessage && !isTyping && !aiLoading) ||
+                    isHovered) && (
+                    <div className="flex gap-2 items-center w-full mt-2">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -169,11 +179,25 @@ export const Message = ({ message }: MessageProps) => {
                             ) : (
                               <GoCopy />
                             )}
-                            {copied ? "Copied" : "Copy"}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>Copy</TooltipContent>
                       </Tooltip>
+
+                      {/* Voice Read Button */}
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={toggleSpeech}
+                            variant="ghost"
+                            className="text-white h-full text-xs hover:bg-gray-700 flex items-center"
+                          >
+                            {isSpeaking ? <IoStopCircle /> : <HiSpeakerWave />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Read aloud</TooltipContent>
+                      </Tooltip>
+
                       <ModelsMenu />
                     </div>
                   )}

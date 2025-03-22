@@ -9,7 +9,7 @@ import { inputSchema, InputSchema } from "@/schema/inputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateAIResponse } from "@/Api/model";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { addMessage, setAiLoading } from "@/redux/slice/chatSlice";
+import { addMessage, setAiLoading, setIsTyping } from "@/redux/slice/chatSlice";
 import { PiWaveformBold } from "react-icons/pi";
 import { BsFillStopFill } from "react-icons/bs";
 
@@ -25,6 +25,10 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
 
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const [imageBase64, setImageBase64] = useState<string | undefined>(undefined);
+  const [imageMimeType, setImageMimeType] = useState<string | undefined>(
+    undefined
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<InputSchema>({
@@ -35,7 +39,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   const textValue = form.watch("text");
 
   const onSubmit = async (data: InputSchema) => {
-    if (!data.text.trim() && !imageUrl) return;
+    if (!data.text.trim() && !imageBase64) return;
 
     dispatch(
       addMessage({
@@ -49,11 +53,14 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     try {
       form.reset();
       setImageUrl(undefined);
+      setImageBase64(undefined);
+      setImageMimeType(undefined);
       scrollToBottom?.();
 
-      // ✅ Pass text or image as input
       const aiResponse = await generateAIResponse(
-        imageUrl ? { url: imageUrl, type: "image" } : data.text,
+        imageBase64
+          ? { base64: imageBase64, mimeType: imageMimeType || "image/png" }
+          : data.text,
         model || "gemini-2.0-flash"
       );
 
@@ -89,6 +96,16 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
       const uploadedImageUrl = response.data.data.url;
       console.log("Uploaded Image URL:", uploadedImageUrl);
       setImageUrl(uploadedImageUrl);
+
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+        const mimeType = file.type;
+        setImageBase64(base64Data.split(",")[1]); // Extract pure base64
+        setImageMimeType(mimeType);
+      };
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -118,8 +135,12 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                         className="size-12 rounded-md object-cover"
                       />
                       <button
-                        onClick={() => setImageUrl(undefined)}
-                        className=" rounded-full size-3 absolute top-[-5px] right-1 hover:bg-transparent border dark:border-gray-100 bg-transparent"
+                        onClick={() => {
+                          setImageUrl(undefined);
+                          setImageBase64(undefined);
+                          setImageMimeType(undefined);
+                        }}
+                        className="rounded-full size-3 absolute top-[-5px] right-1 hover:bg-transparent border dark:border-gray-100 bg-transparent"
                       >
                         <RiCloseCircleFill className="size-6 dark:text-white text-black" />
                       </button>

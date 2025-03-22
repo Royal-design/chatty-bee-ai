@@ -9,6 +9,7 @@ import { TfiReload } from "react-icons/tfi";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setModel, regenerateAIMessage } from "@/redux/slice/chatSlice";
 import { generateAIResponse } from "@/Api/model";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const ModelsMenu = () => {
   const dispatch = useAppDispatch();
@@ -36,8 +37,13 @@ export const ModelsMenu = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="p-2">
-        <TfiReload />
+      <DropdownMenuTrigger className="p-2 text-xs">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <TfiReload />
+          </TooltipTrigger>
+          <TooltipContent>Reload</TooltipContent>
+        </Tooltip>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => handleModelChange("gemini-2.0-flash")}>

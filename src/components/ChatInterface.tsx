@@ -126,8 +126,10 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           <div className="flex justify-between items-center"></div>
         </SidebarFooter>
       </Sidebar>
-      <SidebarTrigger className="text-primary fixed top-3 left-2 z-10 mr-5 hover:" />
-      <main className="w-full h-screen">{children}</main>
+      <SidebarTrigger className="text-primary fixed top-3 left-2 z-10 mr-5" />
+      <main className="w-full max-h-screen flex flex-col overflow-clip ">
+        {children}
+      </main>
     </SidebarProvider>
   );
 };

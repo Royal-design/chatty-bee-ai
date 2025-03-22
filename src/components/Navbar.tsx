@@ -3,10 +3,15 @@ import { MenuBox } from "./MenuBox";
 import { useAppSelector } from "@/redux/store";
 import { Button } from "./ui/button";
 import { SelectModel } from "./SelectModel";
-export const Navbar = () => {
+import { ReactElement } from "react";
+type ChildrenProps = {
+  children?: ReactElement;
+};
+export const Navbar = ({ children }: ChildrenProps) => {
   const user = useAppSelector((state) => state.auth.user);
   return (
-    <div className="py-2 px-8 w-full items-center flex justify-between">
+    <div className="py-2 px-8 w-full border-b items-center flex justify-between">
+      {children}
       <figure className="flex items-center gap-2">
         <img
           src={chattyAi}

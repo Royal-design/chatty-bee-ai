@@ -9,7 +9,7 @@ import { inputSchema, InputSchema } from "@/schema/inputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateAIResponse } from "@/Api/model";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { addMessage, setAiLoading, setIsTyping } from "@/redux/slice/chatSlice";
+import { addMessage, setAiLoading } from "@/redux/slice/chatSlice";
 import { PiWaveformBold } from "react-icons/pi";
 import { BsFillStopFill } from "react-icons/bs";
 
@@ -36,14 +36,14 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     defaultValues: { text: "" }
   });
 
-  const textValue = form.watch("text");
+  const textValue = form.watch("text") || "";
 
   const onSubmit = async (data: InputSchema) => {
-    if (!data.text.trim() && !imageBase64) return;
+    if (!(data.text?.trim() || "") && !imageBase64) return;
 
     dispatch(
       addMessage({
-        text: data.text,
+        text: data.text || "",
         image: imageUrl,
         type: "user"
       })
@@ -60,7 +60,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
       const aiResponse = await generateAIResponse(
         imageBase64
           ? { base64: imageBase64, mimeType: imageMimeType || "image/png" }
-          : data.text,
+          : data.text || "",
         model || "gemini-2.0-flash"
       );
 
@@ -193,7 +193,9 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
           <Button
             className="border-none rounded-full border shrink-0 size-9"
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={
+              form.formState.isSubmitting || (!textValue.trim() && !imageBase64)
+            }
             aria-label="Send Message"
           >
             {isTyping || aiLoading ? (

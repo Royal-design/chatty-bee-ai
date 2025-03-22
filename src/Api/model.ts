@@ -1,6 +1,5 @@
 import { genAI } from "../Api/api";
 
-// Modify AIInput to accept base64 images
 type AIInput = string | { base64: string; mimeType: string };
 
 export async function generateAIResponse(
@@ -44,7 +43,6 @@ export async function generateAIResponse(
       - **Adapt responses based on context (math, coding, general help, etc.).**
     `;
 
-    // ✅ Send request with text + image (if applicable)
     const result = await model.generateContent([
       systemPrompt,
       requestPrompt,

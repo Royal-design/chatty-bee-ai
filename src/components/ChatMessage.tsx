@@ -15,7 +15,7 @@ export const ChatMessage = ({
   showScrollButton
 }: ChatMessageProps) => {
   return (
-    <div className="flex flex-col  gap-8">
+    <div className="flex flex-col w-full  gap-8">
       {messages.map((message) => (
         <div key={message.id}>
           <Message message={message} />

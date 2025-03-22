@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { LuPanelLeftClose } from "react-icons/lu";
-
+import { BiMenuAltLeft } from "react-icons/bi";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -268,7 +268,8 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <LuPanelLeftClose size={30} className="h-10 size-7" />
+      <LuPanelLeftClose className="h-10 size-6 md:block hidden" />
+      <BiMenuAltLeft className="h-10 size-6 md:hidden" />
 
       <span className="sr-only">Toggle Sidebar</span>
     </Button>

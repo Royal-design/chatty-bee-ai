@@ -9,15 +9,15 @@ import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Check, Play, Pause } from "lucide-react";
+import { Check } from "lucide-react";
 import { TypeAnimation } from "react-type-animation";
 import chattyAi from "@/assets/chatty.png";
 import { GoCopy } from "react-icons/go";
 import { ModelsMenu } from "./ModelsMenu";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setIsTyping } from "@/redux/slice/chatSlice";
-import { HiSpeakerWave } from "react-icons/hi2";
-import { IoStopCircle } from "react-icons/io5";
+import { PiSpeakerHighLight } from "react-icons/pi";
+import { HiOutlineStopCircle } from "react-icons/hi2";
 
 interface MessageType {
   image?: string;
@@ -89,10 +89,31 @@ export const Message = ({ message }: MessageProps) => {
   }, [isTyping, isLastAiMessage]);
 
   return (
-    <div ref={messageRef}>
+    <div ref={messageRef} className="w-full">
+      {/* User Message with Image */}
+      {message.type === "user" && message.image && (
+        <div className="flex justify-end mb-1">
+          <img
+            src={message.image}
+            alt="image"
+            className="w-[60%] object-contain md:w-sm rounded-md"
+          />
+        </div>
+      )}
+
+      {/* User Message */}
+      {message.type === "user" && (
+        <div className="flex justify-end">
+          <Card className="shadow-sm py-0 rounded-2xl max-w-md ">
+            <CardContent className="px-5 py-2">
+              <p>{message.text}</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       {message.type === "ai" && (
         <div
-          className="flex gap-2 justify-start items-start relative"
+          className="flex gap-2 justify-start w-full items-start relative"
           onClick={() => setIsHovered(!isHovered)}
         >
           <img
@@ -192,7 +213,11 @@ export const Message = ({ message }: MessageProps) => {
                             variant="ghost"
                             className="text-white h-full text-xs hover:bg-gray-700 flex items-center"
                           >
-                            {isSpeaking ? <IoStopCircle /> : <HiSpeakerWave />}
+                            {isSpeaking ? (
+                              <HiOutlineStopCircle />
+                            ) : (
+                              <PiSpeakerHighLight />
+                            )}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>Read aloud</TooltipContent>

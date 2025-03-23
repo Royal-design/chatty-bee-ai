@@ -40,7 +40,7 @@ export const SelectModel = () => {
       onValueChange={(value) => dispatch(setModel(value))}
       defaultValue=""
     >
-      <SelectTrigger className="w-40 border rounded-lg p-2">
+      <SelectTrigger className="md:w-40 border rounded-lg p-2">
         <SelectValue placeholder="Chatty Model" />
       </SelectTrigger>
       <SelectContent>

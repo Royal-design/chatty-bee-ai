@@ -113,7 +113,7 @@ export const Message = ({ message }: MessageProps) => {
       )}
       {message.type === "ai" && (
         <div
-          className="flex gap-2 justify-start w-full items-start relative"
+          className="flex justify-start w-full items-start relative"
           onClick={() => setIsHovered(!isHovered)}
         >
           <img
@@ -193,7 +193,7 @@ export const Message = ({ message }: MessageProps) => {
                           <Button
                             onClick={copyToClipboard}
                             variant="ghost"
-                            className="text-white h-full text-xs hover:bg-gray-700 flex items-center"
+                            className="text-primary h-full text-xs hover:bg-transparent flex items-center"
                           >
                             {copied ? (
                               <Check className="size-4 text-green-400" />
@@ -211,7 +211,7 @@ export const Message = ({ message }: MessageProps) => {
                           <Button
                             onClick={toggleSpeech}
                             variant="ghost"
-                            className="text-white h-full text-xs hover:bg-gray-700 flex items-center"
+                            className="text-primary h-full text-xs hover:bg-transparent flex items-center"
                           >
                             {isSpeaking ? (
                               <HiOutlineStopCircle />

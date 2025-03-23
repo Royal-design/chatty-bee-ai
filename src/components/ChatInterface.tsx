@@ -176,10 +176,12 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
         </SidebarContent>
 
         <SidebarFooter className="w-full text-primary border-t dark:border-slate-800 text-sm">
-          <div className="flex justify-between items-center"></div>
+          <div className="flex justify-between items-center">
+            <p>&copy; Emmanuel {new Date().getFullYear()}</p>
+          </div>
         </SidebarFooter>
       </Sidebar>
-      <main className="w-full max-h-screen overflow-clip">
+      <main className="w-full max-h-screen overflow-hidden">
         <div className="flex items-center md:hidden">
           <Navbar>
             <SidebarTrigger />

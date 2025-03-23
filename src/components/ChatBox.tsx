@@ -58,7 +58,7 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full w-full flex flex-col  relative">
+    <div className="h-full w-full flex justify-between flex-col">
       {messages.length > 0 ? (
         <div
           ref={chatContainerRef}
@@ -81,12 +81,12 @@ export const ChatBox = () => {
           </div>
         </div>
       ) : (
-        <div className="mt-[10rem] mb-4">
-          <h2 className="text-4xl text-center">What can I help you with?</h2>
+        <div className="mb-4 mt-[10rem]">
+          <h2 className="text-2xl  text-center">What can I help you with?</h2>
         </div>
       )}
 
-      <div className="pb-[5rem] px-4 flex justify-center">
+      <div className="pb-[5rem]  px-4 flex justify-center">
         <div className="lg:w-2xl w-full">
           <TextInput scrollToBottom={scrollToBottom} />
         </div>

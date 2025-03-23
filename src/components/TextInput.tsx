@@ -148,12 +148,12 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                   )}
 
                   <Textarea
-                    placeholder="Type or speak your message..."
+                    placeholder="Ask anything"
                     {...field}
-                    className={`w-full p-4 pl-10 max-h-[15rem] rounded-4xl resize-none overflow-y-auto scrollbar-hidden ${
+                    className={`w-full p-4 pl-10 max-h-[10rem] rounded-4xl resize-none overflow-y-auto scrollbar-hidden ${
                       imageUrl
-                        ? "md:pt-20 min-h-[12rem]"
-                        : "md:pt-6 pt-10 min-h-[8rem]"
+                        ? "md:pt-20 pt-17 min-h-[10rem]"
+                        : "md:pt-6 pt-2 min-h-[6rem]"
                     }`}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {

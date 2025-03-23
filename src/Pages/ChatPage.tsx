@@ -7,7 +7,7 @@ export const ChatPage = () => {
   return (
     <div className="h-full w-full">
       <ChatInterface>
-        {activeChatId ? <ChatBox /> : <p> No chat</p>}
+        {activeChatId ? <ChatBox /> : <p className="text-center"> No chats</p>}
       </ChatInterface>
     </div>
   );

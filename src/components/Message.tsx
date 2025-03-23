@@ -104,7 +104,7 @@ export const Message = ({ message }: MessageProps) => {
       {/* User Message */}
       {message.type === "user" && (
         <div className="flex justify-end">
-          <Card className="shadow-sm py-0 rounded-2xl max-w-md ">
+          <Card className="shadow-sm py-0 rounded-2xl md:max-w-md max-w-[80%] ">
             <CardContent className="px-5 py-2">
               <p>{message.text}</p>
             </CardContent>
@@ -144,7 +144,7 @@ export const Message = ({ message }: MessageProps) => {
                           {copied ? "Copied" : "Copy"}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Copy to clipboard</TooltipContent>
+                      <TooltipContent>Copy</TooltipContent>
                     </Tooltip>
                   </div>
 

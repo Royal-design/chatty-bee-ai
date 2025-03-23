@@ -103,7 +103,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
       reader.onloadend = () => {
         const base64Data = reader.result as string;
         const mimeType = file.type;
-        setImageBase64(base64Data.split(",")[1]); // Extract pure base64
+        setImageBase64(base64Data.split(",")[1]);
         setImageMimeType(mimeType);
       };
     } catch (error) {

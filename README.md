@@ -1,54 +1,34 @@
-# React + TypeScript + Vite
+# 🐝 ChattyBee AI - Intelligent AI Chat Assistant 🤖
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **ChattyBee AI**, an intelligent and interactive AI-powered assistant! 🚀  
+ChattyBee AI allows users to **chat, translate text, and summarize content** seamlessly using AI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Features
 
-## Expanding the ESLint configuration
+✅ **Real-Time AI Conversations** - Get intelligent and instant responses.  
+✅ **Multi-Language Translation** - Translate text into different languages.  
+✅ **Text Summarization** - Get concise summaries of long texts.  
+✅ **User-Friendly Interface** - Clean, responsive, and smooth UI.  
+✅ **Fast & Reliable** - Built with optimized performance in mind.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🚀 Live Demo
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+🔗 [click the link to access the site](https://chatty-bee-ai.vercel.app/)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 🔧 Tech Stack
+
+ChattyBee AI is built using modern web technologies:
+
+- **Frontend**: React, TypeScript, Redux Toolkit, Tailwind CSS
+- **AI Integration**: Chrome AI APIs, Google Gemini
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS, ShadCN UI
+- **Backend (if applicable)**: Firebase
+
+---

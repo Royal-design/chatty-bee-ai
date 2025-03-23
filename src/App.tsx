@@ -45,7 +45,6 @@ function App() {
   useEffect(() => {
     if (theme !== "system") return;
 
-    console.log("Listening for system theme changes...");
     const handleSystemThemeChange = () => {
       const newTheme = getSystemTheme();
       applyTheme(newTheme);

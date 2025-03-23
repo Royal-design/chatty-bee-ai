@@ -181,7 +181,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </div>
         </SidebarFooter>
       </Sidebar>
-      <main className="w-full max-h-screen overflow-hidden">
+      <main className="w-full max-h-screen h-screen overflow-clip">
         <div className="flex items-center md:hidden">
           <Navbar>
             <SidebarTrigger />

@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface MessageProps {
   id: number;
   text: string;
-  image?: string; // 🔹 Added image field (optional)
+  image?: string;
   type: "user" | "ai";
   timestamp: string;
 }
@@ -24,7 +24,7 @@ interface ChatState {
   userId: string | null;
   reloadMessages: boolean;
   lastUserMessage: string | null;
-  isTyping: boolean; // ✅ Tracks if AI is generating a response
+  isTyping: boolean;
 }
 
 // Generate storage key based on user ID
@@ -56,7 +56,7 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       userId,
       reloadMessages: false,
       lastUserMessage: null,
-      isTyping: false // ✅ Initially false
+      isTyping: false
     };
   } catch (error) {
     console.error("Error loading chats:", error);
@@ -70,7 +70,7 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       userId,
       reloadMessages: false,
       lastUserMessage: null,
-      isTyping: false // ✅ Initially false
+      isTyping: false
     };
   }
 };
@@ -107,7 +107,7 @@ const initialState: ChatState = {
   userId: null,
   reloadMessages: false,
   lastUserMessage: null,
-  isTyping: false // ✅ Initially false
+  isTyping: false
 };
 
 export const chatSlice = createSlice({
@@ -176,7 +176,6 @@ export const chatSlice = createSlice({
         state.lastUserMessage = action.payload.text;
       }
 
-      // ✅ AI starts typing
       if (action.payload.type === "ai") {
         state.isTyping = true;
       }
@@ -228,7 +227,7 @@ export const chatSlice = createSlice({
         });
       }
 
-      state.isTyping = false; // ✅ AI stops typing
+      state.isTyping = false;
       state.aiLoading = false;
       saveChatsToStorage(state);
     },

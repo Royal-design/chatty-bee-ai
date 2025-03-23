@@ -177,7 +177,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
 
         <SidebarFooter className="w-full text-primary border-t dark:border-slate-800 text-sm">
           <div className="flex justify-between items-center">
-            <p>&copy; Emmanuel {new Date().getFullYear()}</p>
+            <p>&copy; Emmanuel {new Date().getFullYear()} - ChattyBee AI</p>
           </div>
         </SidebarFooter>
       </Sidebar>

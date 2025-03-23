@@ -62,13 +62,18 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+      <DialogTrigger className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition duration-200">
         <BiSearch className="size-6" />
       </DialogTrigger>
-      <DialogContent className="h-[80%]">
-        <DialogHeader>
-          <DialogTitle>Search Chats</DialogTitle>
-          <DialogDescription>Find a chat by keyword</DialogDescription>
+
+      <DialogContent className="max-h-[90vh] w-[90vw] md:w-[50vw] lg:w-[40vw] overflow-hidden rounded-lg shadow-lg">
+        <DialogHeader className="mb-2">
+          <DialogTitle className="text-lg font-semibold">
+            Search Chats
+          </DialogTitle>
+          <DialogDescription className="text-sm text-gray-500">
+            Find a chat by keyword
+          </DialogDescription>
         </DialogHeader>
 
         {/* 🔹 Search Input */}
@@ -76,9 +81,11 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
           placeholder="Search chats..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
         />
 
-        <div className="mt-4 space-y-2 h-[80%] overflow-auto scrollbar-hidden">
+        {/* 🔹 Chat List */}
+        <div className="mt-4 space-y-2 max-h-[60vh] overflow-auto scrollbar-hidden pb-8 ">
           {isLoading ? (
             <div className="space-y-6">
               {[...Array(3)].map((_, i) => (
@@ -86,10 +93,12 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
               ))}
             </div>
           ) : Object.keys(filteredChats).length === 0 ? (
-            <p className="text-gray-500">No matching chats found.</p>
+            <p className="text-gray-500 text-center py-4">
+              No matching chats found.
+            </p>
           ) : (
             Object.entries(filteredChats).map(([dateLabel, chats]) => (
-              <div key={dateLabel}>
+              <div key={dateLabel} className="space-y-2">
                 <p className="font-semibold text-gray-500">{dateLabel}</p>
                 <ul className="space-y-2">
                   {chats.map((chat) => (
@@ -99,10 +108,10 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
                         navigate(`/chats/${chat.id}`);
                       }}
                       key={chat.id}
-                      className="p-2 flex gap-4 items-center border rounded-md"
+                      className="p-3 flex gap-4 items-center border rounded-md cursor-pointer transition duration-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                      <PiChatsCircle className="size-6" />
-                      <div className="">
+                      <PiChatsCircle className="size-6 text-primary" />
+                      <div>
                         <span className="block font-medium">
                           {chat.messages[0]?.text || "New Chat"}
                         </span>

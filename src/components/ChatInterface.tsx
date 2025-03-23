@@ -118,10 +118,10 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </div>
         </SidebarHeader>
 
-        <SidebarContent className="bg-background text-primary">
+        <SidebarContent className="bg-background text-primary max-h-[calc(100vh-4rem)] overflow-y-auto">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="max-h-[calc(100vh-10rem)] overflow-y-auto scrollbar-hidden space-y-2">
                 {isLoading ? (
                   <div className="space-y-3">
                     {[...Array(3)].map((_, i) => (
@@ -181,7 +181,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </div>
         </SidebarFooter>
       </Sidebar>
-      <main className="w-full max-h-screen h-screen overflow-clip">
+      <main className="w-full h-screen max-h-screen overflow-clip ">
         <div className="flex items-center md:hidden">
           <Navbar>
             <SidebarTrigger />

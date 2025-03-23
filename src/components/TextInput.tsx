@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Button } from "./ui/button";
@@ -21,7 +21,9 @@ interface TextInputProps {
 
 export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   const dispatch = useAppDispatch();
-  const { model, isTyping, aiLoading } = useAppSelector((state) => state.chat);
+  const { model, isTyping, aiLoading, activeChatId } = useAppSelector(
+    (state) => state.chat
+  );
 
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
@@ -30,11 +32,16 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     undefined
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const textInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const form = useForm<InputSchema>({
     resolver: zodResolver(inputSchema),
     defaultValues: { text: "" }
   });
+
+  useEffect(() => {
+    textInputRef.current?.focus();
+  }, [activeChatId]);
 
   const textValue = form.watch("text") || "";
 
@@ -150,10 +157,14 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                   <Textarea
                     placeholder="Ask anything"
                     {...field}
+                    ref={(el) => {
+                      field.ref(el);
+                      textInputRef.current = el;
+                    }}
                     className={`w-full p-4 pl-10 max-h-[10rem] rounded-4xl resize-none overflow-y-auto scrollbar-hidden ${
                       imageUrl
                         ? "md:pt-20 pt-17 min-h-[10rem]"
-                        : "md:pt-6 pt-2 min-h-[6rem]"
+                        : "md:pt-4 pt-2 min-h-[7rem]"
                     }`}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {

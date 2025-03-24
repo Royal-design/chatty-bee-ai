@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { genAI } from "../Api/api";
 
 type AIInput = string | { base64: string; mimeType: string };
@@ -29,14 +30,12 @@ export async function generateAISuggestions(
     const suggestions =
       result.response
         .text()
-        .match(/[^.!?]+[.!?]/g) // Extract complete sentences
+        .match(/[^.!?]+[.!?]/g)
         ?.map((s) => s.trim()) || [];
 
-    console.log("AI Suggestions:", suggestions); // Log suggestions for confirmation
-
-    return suggestions.slice(0, 4); // Return exactly 4 suggestions
+    return suggestions.slice(0, 4);
   } catch (error) {
-    console.error("Error generating AI suggestions:", error);
+    toast.error("Error generating AI suggestions");
     return [];
   }
 }

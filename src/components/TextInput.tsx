@@ -63,7 +63,6 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     const newTimer = setTimeout(async () => {
       if (input.trim()) {
         const aiSuggestions = await generateAISuggestions(input);
-        console.log("Received AI Suggestions:", aiSuggestions);
         dispatch(setSuggestions(aiSuggestions));
       } else {
         dispatch(setSuggestions([]));
@@ -131,7 +130,6 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
       if (!response.data.success) throw new Error("Image upload failed");
 
       const uploadedImageUrl = response.data.data.url;
-      console.log("Uploaded Image URL:", uploadedImageUrl);
       setImageUrl(uploadedImageUrl);
 
       // Convert image to base64

@@ -26,8 +26,6 @@ export const ModelsMenu = () => {
             lastUserMessage,
             newModel
           );
-          console.log(lastUserMessage);
-          console.log(aiResponse);
 
           dispatch(regenerateAIMessage(aiResponse));
         }

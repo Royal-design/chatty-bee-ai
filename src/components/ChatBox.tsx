@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppSelector } from "@/redux/store";
 import { ChatMessage } from "./ChatMessage";
 import { TextInput } from "./TextInput";
+import { SuggestionBox } from "./SuggestionBox";
 
 export const ChatBox = () => {
   const { chats, activeChatId, aiLoading, reloadMessages } = useAppSelector(
@@ -11,12 +12,10 @@ export const ChatBox = () => {
   const activeChat =
     chats.find((chat) => chat.id === activeChatId) || chats[0] || null;
   const messages = activeChat ? activeChat.messages : [];
-
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const isUserScrolling = useRef(false);
   const [prevMessageCount, setPrevMessageCount] = useState(messages.length);
   const [showScrollButton, setShowScrollButton] = useState(false);
-
   // Scroll to bottom function
   const scrollToBottom = () => {
     chatContainerRef.current?.scrollTo({
@@ -58,7 +57,7 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full w-full flex justify-between flex-col">
+    <div className="h-full w-full flex md:justify-center justify-between flex-col">
       {messages.length > 0 ? (
         <div
           ref={chatContainerRef}
@@ -81,14 +80,15 @@ export const ChatBox = () => {
           </div>
         </div>
       ) : (
-        <div className="mb-4 mt-[10rem]">
+        <div className="mb-4 mt-[10rem] md:mt-0">
           <h2 className="text-2xl  text-center">What can I help you with?</h2>
         </div>
       )}
 
-      <div className="pb-[5rem]  px-4 flex justify-center">
+      <div className="pb-[5rem]  px-4 flex flex-col items-center justify-center">
         <div className="lg:w-2xl w-full">
           <TextInput scrollToBottom={scrollToBottom} />
+          <SuggestionBox />
         </div>
       </div>
     </div>

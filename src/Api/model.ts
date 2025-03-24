@@ -2,6 +2,46 @@ import { genAI } from "../Api/api";
 
 type AIInput = string | { base64: string; mimeType: string };
 
+// Function to generate real-time suggestions while typing
+export async function generateAISuggestions(
+  input: string,
+  modelName: string = "gemini-2.0-flash"
+): Promise<string[]> {
+  try {
+    if (!input.trim()) return [];
+
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    const suggestionPrompt = `
+      Based on the given input: "${input}", generate exactly 4 different autocomplete suggestions.
+      - Each suggestion must be a **complete sentence**.
+      - Ensure the suggestions vary in meaning and style.
+      - Return only the 4 sentences without numbering or line breaks.
+    `;
+
+    const result = await model.generateContent([suggestionPrompt]);
+
+    if (!result?.response?.text) {
+      throw new Error("Failed to generate suggestions.");
+    }
+
+    // Ensure suggestions are complete sentences
+    const suggestions =
+      result.response
+        .text()
+        .match(/[^.!?]+[.!?]/g) // Extract complete sentences
+        ?.map((s) => s.trim()) || [];
+
+    console.log("AI Suggestions:", suggestions); // Log suggestions for confirmation
+
+    return suggestions.slice(0, 4); // Return exactly 4 suggestions
+  } catch (error) {
+    console.error("Error generating AI suggestions:", error);
+    return [];
+  }
+}
+
+// Function to generate final AI response after user submits input
 export async function generateAIResponse(
   input: AIInput,
   modelName: string = "gemini-2.0-flash"

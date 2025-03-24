@@ -2,7 +2,6 @@ import { Toaster } from "sonner";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { RootLayout } from "./Layouts/RootLayout";
 import { ChatPage } from "./Pages/ChatPage";
-import { UniqueChatPage } from "./Pages/UniqueChatPage";
 import { PublicLayout } from "./Layouts/PublicLayout";
 import { LoginPage } from "./Pages/LoginPage";
 import { RegisterPage } from "./Pages/RegisterPage";
@@ -65,7 +64,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route index element={user ? <ChatPage /> : <HomePage />} />
           <Route path="/chats" element={<ChatPage />} />
-          <Route path="/chats/:chatId" element={<UniqueChatPage />} />
+          <Route path="/chats/:chatId" element={<ChatPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Route>
         <Route element={<PublicLayout />}>

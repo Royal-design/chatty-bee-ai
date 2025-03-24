@@ -25,6 +25,8 @@ interface ChatState {
   reloadMessages: boolean;
   lastUserMessage: string | null;
   isTyping: boolean;
+  suggestions?: string[];
+  clearInput?: boolean;
 }
 
 // Generate storage key based on user ID
@@ -242,6 +244,15 @@ export const chatSlice = createSlice({
 
     setIsTyping: (state, action: PayloadAction<boolean>) => {
       state.isTyping = action.payload;
+    },
+    setSuggestions: (state, action: PayloadAction<string[]>) => {
+      state.suggestions = action.payload;
+    },
+    clearInput: (state) => {
+      state.clearInput = true;
+    },
+    resetClearInput: (state) => {
+      state.clearInput = false;
     }
   }
 });
@@ -257,6 +268,9 @@ export const {
   setLoading,
   setAiLoading,
   regenerateAIMessage,
+  setSuggestions,
+  clearInput,
+  resetClearInput,
   setIsTyping
 } = chatSlice.actions;
 export default chatSlice.reducer;

@@ -7,11 +7,17 @@ import { Textarea } from "./ui/textarea";
 import { RiAddLine, RiArrowUpLine, RiCloseCircleFill } from "react-icons/ri";
 import { inputSchema, InputSchema } from "@/schema/inputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { generateAIResponse } from "@/Api/model";
+import { generateAIResponse, generateAISuggestions } from "@/Api/model";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { addMessage, setAiLoading } from "@/redux/slice/chatSlice";
+import {
+  addMessage,
+  resetClearInput,
+  setAiLoading,
+  setSuggestions
+} from "@/redux/slice/chatSlice";
 import { PiWaveformBold } from "react-icons/pi";
 import { BsFillStopFill } from "react-icons/bs";
+import { toast } from "sonner";
 
 const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_KEY;
 
@@ -21,15 +27,17 @@ interface TextInputProps {
 
 export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   const dispatch = useAppDispatch();
-  const { model, isTyping, aiLoading, activeChatId } = useAppSelector(
-    (state) => state.chat
-  );
+  const { model, isTyping, clearInput, aiLoading, activeChatId } =
+    useAppSelector((state) => state.chat);
 
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [imageBase64, setImageBase64] = useState<string | undefined>(undefined);
   const [imageMimeType, setImageMimeType] = useState<string | undefined>(
     undefined
+  );
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const textInputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -38,12 +46,32 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     resolver: zodResolver(inputSchema),
     defaultValues: { text: "" }
   });
-
+  useEffect(() => {
+    if (clearInput) {
+      form.reset();
+      dispatch(resetClearInput());
+    }
+  }, [clearInput]);
   useEffect(() => {
     textInputRef.current?.focus();
   }, [activeChatId]);
 
   const textValue = form.watch("text") || "";
+
+  const handleInputChange = (input: string) => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    const newTimer = setTimeout(async () => {
+      if (input.trim()) {
+        const aiSuggestions = await generateAISuggestions(input);
+        console.log("Received AI Suggestions:", aiSuggestions);
+        dispatch(setSuggestions(aiSuggestions));
+      } else {
+        dispatch(setSuggestions([]));
+      }
+    }, 500);
+
+    setDebounceTimer(newTimer);
+  };
 
   const onSubmit = async (data: InputSchema) => {
     if (!(data.text?.trim() || "") && !imageBase64) return;
@@ -79,8 +107,10 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
       );
     } catch (err) {
       console.error("Error generating AI response:", err);
+      toast.success("Error generating AI response");
     } finally {
       dispatch(setAiLoading(false));
+      dispatch(setSuggestions([]));
     }
   };
 
@@ -166,6 +196,10 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                         ? "md:pt-20 pt-17 min-h-[10rem]"
                         : "md:pt-4 pt-2 min-h-[7rem]"
                     }`}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      handleInputChange(e.target.value);
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();

@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { Textarea } from "./ui/textarea";
-import { RiAddLine, RiArrowUpLine, RiCloseCircleFill } from "react-icons/ri";
+import { RiAddLine, RiArrowUpLine } from "react-icons/ri";
 import { inputSchema, InputSchema } from "@/schema/inputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateAIResponse, generateAISuggestions } from "@/Api/model";
@@ -18,6 +18,7 @@ import {
 import { PiWaveformBold } from "react-icons/pi";
 import { BsFillStopFill } from "react-icons/bs";
 import { toast } from "sonner";
+import { IoIosClose } from "react-icons/io";
 
 const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_KEY;
 
@@ -152,36 +153,35 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="relative w-full rounded flex items-center"
+        className=" flex flex-col w-full px-4 rounded-4xl pt-2 border"
       >
+        {imageUrl && (
+          <div className="items-center pb-2 gap-2 relative px-2 rounded-md">
+            <img
+              src={imageUrl}
+              alt="Preview"
+              className="size-12 rounded-md object-cover"
+            />
+            <button
+              onClick={() => {
+                setImageUrl(undefined);
+                setImageBase64(undefined);
+                setImageMimeType(undefined);
+              }}
+              className="rounded-full dark:bg-gray-400 bg-black  absolute top-[-5px] left-[44px]"
+            >
+              <IoIosClose className="dark:text-black text-white" />
+            </button>
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="text"
           render={({ field }) => (
-            <FormItem className="w-full">
+            <FormItem className="w-full h-full">
               <FormControl>
-                <div className="relative">
-                  {/* Image Preview with Close Button */}
-                  {imageUrl && (
-                    <div className="absolute top-2 left-4 flex items-center gap-2 p-1 px-2 rounded-md">
-                      <img
-                        src={imageUrl}
-                        alt="Preview"
-                        className="size-12 rounded-md object-cover"
-                      />
-                      <button
-                        onClick={() => {
-                          setImageUrl(undefined);
-                          setImageBase64(undefined);
-                          setImageMimeType(undefined);
-                        }}
-                        className="rounded-full size-3 absolute top-[-5px] right-1 hover:bg-transparent border dark:border-gray-100 bg-transparent"
-                      >
-                        <RiCloseCircleFill className="size-6 dark:text-white text-black" />
-                      </button>
-                    </div>
-                  )}
-
+                <div className="w-full">
                   <Textarea
                     placeholder="Ask anything"
                     {...field}
@@ -189,11 +189,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                       field.ref(el);
                       textInputRef.current = el;
                     }}
-                    className={`w-full p-4 pl-10 max-h-[10rem] rounded-4xl resize-none overflow-y-auto scrollbar-hidden ${
-                      imageUrl
-                        ? "md:pt-20 pt-17 min-h-[10rem]"
-                        : "md:pt-4 pt-2 min-h-[7rem]"
-                    }`}
+                    className="resize-none overflow-y-auto scrollbar-hidden w-full border-none rounded-md px-2 py-2 min-h-[5rem]  max-h-[10rem] h-auto"
                     onChange={(e) => {
                       field.onChange(e);
                       handleInputChange(e.target.value);
@@ -211,7 +207,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
           )}
         />
 
-        <div className="flex items-center justify-between absolute px-4 bottom-3 w-full">
+        <div className="bg-background pb-2 justify-between flex  w-full">
           {/* Hidden file input for image upload */}
           <input
             type="file"

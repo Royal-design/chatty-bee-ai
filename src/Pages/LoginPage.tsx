@@ -98,7 +98,7 @@ export const LoginPage = () => {
                     <Input
                       placeholder="Enter your email"
                       {...field}
-                      className="border"
+                      className="border h-12"
                     />
                   </FormControl>
                   <FormMessage />
@@ -114,7 +114,7 @@ export const LoginPage = () => {
                   <FormControl>
                     <Input
                       type="password"
-                      className="border"
+                      className="border h-12"
                       placeholder="Enter your password"
                       {...field}
                     />
@@ -129,7 +129,7 @@ export const LoginPage = () => {
             <Button
               disabled={loadingLogin || loadingGoogle}
               type="submit"
-              className="w-full  duration-200 cursor-pointer"
+              className="w-full h-12 duration-200 cursor-pointer"
             >
               {loadingLogin ? <AuthLoader /> : "Login"}
             </Button>
@@ -137,7 +137,7 @@ export const LoginPage = () => {
               disabled={loadingLogin || loadingGoogle}
               onClick={handleGoogleLogin}
               variant="ghost"
-              className="w-full cursor-pointer hove duration-200 border"
+              className="w-full cursor-pointer h-12 hove duration-200 border"
             >
               {loadingGoogle ? (
                 <AuthLoader />

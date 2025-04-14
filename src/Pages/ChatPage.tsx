@@ -52,7 +52,7 @@ export const ChatPage = () => {
                 {suggestions.length > 0 ? (
                   <SuggestionBox />
                 ) : (
-                  <div className="grid mt-4 grid-cols-[repeat(auto-fit,minmax(60px,1fr))] gap-2 w-full">
+                  <div className=" mt-4 flex justify-center  gap-2 w-full">
                     <Button
                       onClick={() => handleClick("make a life goal plan")}
                       className="text-xs rounded-3xl p-3 h-4 "

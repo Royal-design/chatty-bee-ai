@@ -10,7 +10,7 @@ type ChildrenProps = {
 export const Navbar = ({ children }: ChildrenProps) => {
   const user = useAppSelector((state) => state.auth.user);
   return (
-    <div className="py-1 p-2 md:px-8  w-full border-b items-center flex justify-between">
+    <div className=" sticky top-0 z-50  py-1 p-2 md:px-8  w-full border-b items-center flex justify-between">
       {children}
       <figure className="flex items-center gap-2">
         <img

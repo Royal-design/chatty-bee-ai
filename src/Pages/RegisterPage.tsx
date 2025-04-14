@@ -58,7 +58,7 @@ export const RegisterPage = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-8 h-full flex flex-col p-8  justify-center  items-center w-full"
+        className="space-y-8 h-screen flex flex-col p-8  justify-center  items-center w-full"
       >
         <Card className="max-w-sm  w-full mx-auto p-2 md:p-4 md:border  border-0 rounded-md ">
           <CardHeader className="text-center flex flex-col items-center text-xl md:text2xl mb-4 fontbold">
@@ -79,7 +79,7 @@ export const RegisterPage = () => {
                     <Input
                       placeholder="Enter your name"
                       {...field}
-                      className=" border border-border-color"
+                      className=" border h-12 border-border-color"
                     />
                   </FormControl>
                   <FormMessage />
@@ -96,7 +96,7 @@ export const RegisterPage = () => {
                     <Input
                       placeholder="Enter your email"
                       {...field}
-                      className=" border border-border-color"
+                      className="h-12 border border-border-color"
                     />
                   </FormControl>
                   <FormMessage />
@@ -113,7 +113,7 @@ export const RegisterPage = () => {
                     <Input
                       type="password"
                       placeholder="Enter your password"
-                      className=" border border-border-color"
+                      className="h-12 border border-border-color"
                       {...field}
                     />
                   </FormControl>
@@ -128,7 +128,7 @@ export const RegisterPage = () => {
             <Button
               disabled={form.formState.isSubmitting}
               type="submit"
-              className="w-full border "
+              className="w-full h-12 border "
             >
               {form.formState.isSubmitting ? <AuthLoader /> : "Register"}
             </Button>

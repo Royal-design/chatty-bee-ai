@@ -63,7 +63,7 @@ export const ChatBox = () => {
           ref={chatContainerRef}
           className="pt-2 h-full px-4 overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
         >
-          <div className="lg:w-2xl  w-full">
+          <div className="md:w-xl lg:w-2xl   w-full">
             <ChatMessage
               messages={messages}
               scrollToBottom={scrollToBottom}
@@ -87,11 +87,11 @@ export const ChatBox = () => {
 
       <div
         className={cn(
-          "pb-[5rem] bg-background  fixed bottom-0 w-full transition-[left] duration-200 px-4 flex flex-col items-center justify-center",
-          isSidebarOpen ? "md:left-35" : "md:left-0"
+          "pb-[2rem] bg-background  fixed bottom-0 w-full transition-[left] duration-200 px-4 flex flex-col items-center justify-center",
+          isSidebarOpen ? " md:left-35" : "md:left-0"
         )}
       >
-        <div className="lg:w-2xl w-full">
+        <div className="md:w-xl lg:w-2xl  w-full">
           <TextInput scrollToBottom={scrollToBottom} />
           <SuggestionBox />
         </div>

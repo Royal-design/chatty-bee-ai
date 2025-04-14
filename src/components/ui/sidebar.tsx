@@ -268,8 +268,11 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <LuPanelLeftClose className="h-10 size-6 md:block hidden" />
-      <BiMenuAltLeft className="h-10 size-6 md:hidden" />
+      <LuPanelLeftClose
+        className="h-10 size-6 md:block hidden"
+        strokeWidth={1}
+      />
+      <BiMenuAltLeft strokeWidth={1} className="h-10 size-6 md:hidden" />
 
       <span className="sr-only">Toggle Sidebar</span>
     </Button>

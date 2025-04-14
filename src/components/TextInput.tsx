@@ -153,7 +153,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className=" flex flex-col w-full px-4 rounded-4xl pt-2 border"
+        className=" flex flex-col w-full overflow-hidden px-4 rounded-4xl pt-2 border"
       >
         {imageUrl && (
           <div className="items-center pb-2 gap-2 relative px-2 rounded-md">
@@ -189,8 +189,11 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                       field.ref(el);
                       textInputRef.current = el;
                     }}
-                    className="resize-none overflow-y-auto scrollbar-hidden w-full border-none rounded-md px-2 py-2 min-h-[5rem]  max-h-[10rem] h-auto"
+                    className="resize-none overflow-y-auto scrollbar-hidden w-full  border-none rounded-md"
                     onChange={(e) => {
+                      const el = e.target;
+                      el.style.height = "auto";
+                      el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
                       field.onChange(e);
                       handleInputChange(e.target.value);
                     }}
@@ -221,11 +224,11 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
 
           {/* Add Image Button */}
           <Button
-            className="rounded-full border shrink-0 size-9"
+            className="rounded-full border bg-background hover:bg-transparent shrink-0 size-9"
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
           >
-            {uploading ? "⏳" : <RiAddLine className="size-5" />}
+            {uploading ? "⏳" : <RiAddLine className="size-5 text-primary" />}
           </Button>
 
           {/* Send Message Button */}

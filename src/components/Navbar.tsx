@@ -4,13 +4,21 @@ import { useAppSelector } from "@/redux/store";
 import { Button } from "./ui/button";
 import { SelectModel } from "./SelectModel";
 import { ReactElement } from "react";
+import { cn } from "@/lib/utils";
 type ChildrenProps = {
   children?: ReactElement;
 };
 export const Navbar = ({ children }: ChildrenProps) => {
   const user = useAppSelector((state) => state.auth.user);
+  const isSidebarOpen = useAppSelector((state) => state.chat.isSidebarOpen);
   return (
-    <div className=" sticky top-0 z-50  py-1 p-2 md:px-8  w-full border-b items-center flex justify-between">
+    <div
+      className={cn(
+        "z-50  py-1 p-2 md:px-8  w-full border-b items-center flex justify-between",
+        "fixed top-0 bg-background transition-[left]",
+        isSidebarOpen ? " md:pr-75" : "md:left-0 "
+      )}
+    >
       {children}
       <figure className="flex items-center gap-2">
         <img

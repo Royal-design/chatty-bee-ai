@@ -3,11 +3,11 @@ import { useAppSelector } from "@/redux/store";
 import { ChatMessage } from "./ChatMessage";
 import { TextInput } from "./TextInput";
 import { SuggestionBox } from "./SuggestionBox";
+import { cn } from "@/lib/utils";
 
 export const ChatBox = () => {
-  const { chats, activeChatId, aiLoading, reloadMessages } = useAppSelector(
-    (state) => state.chat
-  );
+  const { chats, activeChatId, isSidebarOpen, aiLoading, reloadMessages } =
+    useAppSelector((state) => state.chat);
 
   const activeChat =
     chats.find((chat) => chat.id === activeChatId) || chats[0] || null;
@@ -57,13 +57,13 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full w-full flex md:justify-center justify-between flex-col">
+    <div className="h-full w-full ">
       {messages.length > 0 ? (
         <div
           ref={chatContainerRef}
-          className="py-2 h-full px-4 overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
+          className="pt-2 h-full px-4 overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
         >
-          <div className="lg:w-2xl w-full">
+          <div className="lg:w-2xl  w-full">
             <ChatMessage
               messages={messages}
               scrollToBottom={scrollToBottom}
@@ -80,12 +80,17 @@ export const ChatBox = () => {
           </div>
         </div>
       ) : (
-        <div className="mb-4 mt-[10rem] md:mt-0">
+        <div className="mb-4 mt-[10rem]">
           <h2 className="text-2xl  text-center">What can I help you with?</h2>
         </div>
       )}
 
-      <div className="pb-[5rem]  px-4 flex flex-col items-center justify-center">
+      <div
+        className={cn(
+          "pb-[5rem] bg-background  fixed bottom-0 w-full transition-[left] duration-200 px-4 flex flex-col items-center justify-center",
+          isSidebarOpen ? "md:left-35" : "md:left-0"
+        )}
+      >
         <div className="lg:w-2xl w-full">
           <TextInput scrollToBottom={scrollToBottom} />
           <SuggestionBox />

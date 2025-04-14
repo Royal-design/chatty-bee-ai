@@ -18,7 +18,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import {
   createNewChat,
   deleteChat,
-  setActiveChat
+  setActiveChat,
+  toggleSidebar
 } from "@/redux/slice/chatSlice";
 import { Trash2 } from "lucide-react";
 import { ReactNode } from "react";
@@ -31,12 +32,14 @@ import { SearchSkeleton } from "./SearchSkeleton";
 
 export const ChatInterface = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
-  const { chats, activeChatId } = useAppSelector((state) => state.chat);
-
+  const { chats, activeChatId, isSidebarOpen } = useAppSelector(
+    (state) => state.chat
+  );
   useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 1500);
@@ -91,7 +94,10 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
   }, [groupedChats, searchQuery]);
 
   return (
-    <SidebarProvider open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+    <SidebarProvider
+      open={isSidebarOpen}
+      onOpenChange={() => dispatch(toggleSidebar())}
+    >
       <Sidebar collapsible="offcanvas" className="max-w-md">
         <SidebarHeader className="border-b dark:border-slate-800 md:hidden">
           <h2 className="text-lg font-semibold text-center">Chat Menu</h2>

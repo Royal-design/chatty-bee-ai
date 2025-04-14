@@ -17,6 +17,7 @@ interface Chat {
 interface ChatState {
   chats: Chat[];
   model: string;
+  isSidebarOpen: boolean;
   activeChatId: string | null;
   error: string | null;
   loading: boolean;
@@ -58,7 +59,8 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       userId,
       reloadMessages: false,
       lastUserMessage: null,
-      isTyping: false
+      isTyping: false,
+      isSidebarOpen: true
     };
   } catch (error) {
     console.error("Error loading chats:", error);
@@ -72,7 +74,8 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       userId,
       reloadMessages: false,
       lastUserMessage: null,
-      isTyping: false
+      isTyping: false,
+      isSidebarOpen: true
     };
   }
 };
@@ -109,7 +112,8 @@ const initialState: ChatState = {
   userId: null,
   reloadMessages: false,
   lastUserMessage: null,
-  isTyping: false
+  isTyping: false,
+  isSidebarOpen: true
 };
 
 export const chatSlice = createSlice({
@@ -253,6 +257,10 @@ export const chatSlice = createSlice({
     },
     resetClearInput: (state) => {
       state.clearInput = false;
+    },
+
+    toggleSidebar: (state) => {
+      state.isSidebarOpen = !state.isSidebarOpen;
     }
   }
 });
@@ -271,6 +279,7 @@ export const {
   setSuggestions,
   clearInput,
   resetClearInput,
-  setIsTyping
+  setIsTyping,
+  toggleSidebar
 } = chatSlice.actions;
 export default chatSlice.reducer;

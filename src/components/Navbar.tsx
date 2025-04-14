@@ -1,14 +1,17 @@
 import chattyAi from "@/assets/chatty.png";
 import { MenuBox } from "./MenuBox";
-import { useAppSelector } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Button } from "./ui/button";
 import { SelectModel } from "./SelectModel";
 import { ReactElement } from "react";
 import { cn } from "@/lib/utils";
+import { TbMessageCirclePlus } from "react-icons/tb";
+import { createNewChat } from "@/redux/slice/chatSlice";
 type ChildrenProps = {
   children?: ReactElement;
 };
 export const Navbar = ({ children }: ChildrenProps) => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const isSidebarOpen = useAppSelector((state) => state.chat.isSidebarOpen);
   return (
@@ -24,11 +27,20 @@ export const Navbar = ({ children }: ChildrenProps) => {
         <img
           src={chattyAi}
           alt="chatty"
-          className="size-12 rounded-full border p-2"
+          className="size-10 rounded-full border p-2"
         />
         <SelectModel />
       </figure>
-      <div className="">
+      <div className="md:hidden">
+        <Button
+          onClick={() => dispatch(createNewChat())}
+          variant="ghost"
+          className="cursor-pointer hover:bg-transparent shrink-0"
+        >
+          <TbMessageCirclePlus className="size-6" />
+        </Button>
+      </div>
+      <div className="max-sm:hidden">
         {user ? (
           <MenuBox />
         ) : (

@@ -29,6 +29,7 @@ import { Navbar } from "./Navbar";
 import { SearchDialog } from "./SearchDialog";
 import { Input } from "./ui/input";
 import { SearchSkeleton } from "./SearchSkeleton";
+import { MenuBox } from "./MenuBox";
 
 export const ChatInterface = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const { chats, activeChatId, isSidebarOpen } = useAppSelector(
     (state) => state.chat
@@ -181,10 +183,15 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="w-full text-primary border-t dark:border-slate-800 text-sm">
-          <div className="flex justify-between items-center">
-            <p>&copy; Emmanuel {new Date().getFullYear()} - ChattyBee AI</p>
+        <SidebarFooter className="w-full text-primary border-t px-0 dark:border-slate-800 text-sm">
+          <div className="md:hidden flex items-center p-1 border-b pb-2 justify-between">
+            <p>ChattyBee AI</p>
+            {user && <MenuBox />}
           </div>
+
+          <p className="text-center text-sm">
+            &copy; Emmanuel {new Date().getFullYear()}
+          </p>
         </SidebarFooter>
       </Sidebar>
       <main className="w-full h-screen max-h-screen overflow-clip ">

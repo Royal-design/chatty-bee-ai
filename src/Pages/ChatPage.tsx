@@ -46,13 +46,13 @@ export const ChatPage = () => {
           <ChatBox />
         ) : (
           <div className="flex items-center  justify-center  h-full w-full">
-            <div className="w-2xl">
-              <div className="">
+            <div className="w-2xl max-md:w-full">
+              <div className="w-full">
                 <TextInput />
                 {suggestions.length > 0 ? (
                   <SuggestionBox />
                 ) : (
-                  <div className=" mt-4 flex justify-center  gap-2 w-full">
+                  <div className=" mt-4 flex justify-center flex-wrap gap-2 w-full">
                     <Button
                       onClick={() => handleClick("make a life goal plan")}
                       className="text-xs rounded-3xl p-3 h-4"

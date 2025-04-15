@@ -151,9 +151,9 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
                         {chats.map((chat) => (
                           <SidebarMenuItem
                             key={chat.id}
-                            className={`flex flex-col bg-button-color hover:bg-button-hover-color rounded transition-colors ${
+                            className={`flex flex-col  rounded transition-colors ${
                               activeChatId === chat.id
-                                ? "bg-button-active-color hover:bg-button-active-color"
+                                ? "bg-button-active-color  hover:bg-button-active-color"
                                 : ""
                             }`}
                           >
@@ -163,7 +163,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
                                   dispatch(setActiveChat(chat.id));
                                   navigate(`/chats/${chat.id}`);
                                 }}
-                                className="flex-grow hover:bg-transparent active:bg-transparent flex items-center gap-2 p-2"
+                                className="flex-grow cursor-pointer hover:bg-transparent active:bg-transparent flex items-center gap-2 p-2"
                               >
                                 <span>
                                   {chat.messages[0]?.text || "New Chat"}

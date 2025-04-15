@@ -8,15 +8,15 @@ export const HomePage = () => {
   const [isAlertLoginOpen, setisAlertLoginOpen] = useState(true);
 
   return (
-    <>
+    <div className="w-full">
       <div className="w-full flex flex-col h-full">
-        <div className="h-[200px]">
+        <div className="h-[300px]">
           <Navbar />
         </div>
-        <div className="w-full flex justify-center  ">
-          <div className="w-2xl">
+        <div className="w-full px-2 flex justify-center">
+          <div className=" max-md:w-full">
             <TextInput />
-            <div className="flex justify-center mt-4  gap-4 w-full">
+            <div className="flex justify-center mt-4 flex-wrap  gap-4 w-full">
               <Button className="text-xs rounded-3xl p-3 h-4">
                 Make a plan
               </Button>
@@ -38,6 +38,6 @@ export const HomePage = () => {
         isAlertLoginOpen={isAlertLoginOpen}
         setisAlertLoginOpen={setisAlertLoginOpen}
       />
-    </>
+    </div>
   );
 };

@@ -93,6 +93,11 @@ export const ChatPage = () => {
                     </Button>
                   </div>
                 )}
+                <div className="flex justify-center mt-4">
+                  <small className="text-center w-full">
+                    ChattyBee can make mistake. Check important info
+                  </small>
+                </div>
               </div>
             </div>
           </div>

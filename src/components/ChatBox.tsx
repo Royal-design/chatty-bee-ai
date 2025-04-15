@@ -97,6 +97,11 @@ export const ChatBox = () => {
         >
           <TextInput scrollToBottom={scrollToBottom} />
           <SuggestionBox />
+          <div className="flex justify-center mt-4">
+            <small className="text-center text-text-light w-full">
+              ChattyBee can make mistake. Check important info
+            </small>
+          </div>
         </div>
       </div>
     </div>

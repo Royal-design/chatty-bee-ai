@@ -190,8 +190,8 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
 
         <SidebarFooter className="w-full text-primary border-t px-0 bg-background text-sm">
           <div className="md:hidden flex items-center p-1 gap-6 border-b pb-2 ">
-            {user && <MenuBox />}
-            <p className="text-base">{user?.name}</p>
+            <MenuBox />
+            <p className="text-base">{user?.name || "user"}</p>
           </div>
 
           <p className="text-center text-sm">
@@ -199,7 +199,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </p>
         </SidebarFooter>
       </Sidebar>
-      <main className="w-full h-screen max-h-screen overflow-clip ">
+      <main className="w-full h-screen overflow-hidden ">
         <div className="flex items-center md:hidden">
           <Navbar>
             <SidebarTrigger />

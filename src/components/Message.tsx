@@ -88,6 +88,11 @@ export const Message = ({ message }: MessageProps) => {
     };
   }, [isTyping, isLastAiMessage]);
 
+  useEffect(() => {
+    if (isCode && isLastAiMessage && isTyping) {
+      dispatch(setIsTyping(false));
+    }
+  }, [isCode, isLastAiMessage, isTyping, dispatch]);
   return (
     <div ref={messageRef} className="w-full">
       {/* User Message with Image */}
@@ -155,15 +160,23 @@ export const Message = ({ message }: MessageProps) => {
                       <TooltipContent>Copy</TooltipContent>
                     </Tooltip>
                   </div>
-
-                  <SyntaxHighlighter
-                    language={codeLanguage}
-                    style={atomDark}
-                    wrapLongLines
-                    className="rounded-b-md"
-                  >
-                    {codeContent.trim()}
-                  </SyntaxHighlighter>
+                  <div className="w-full overflow-auto max-w-full">
+                    <div className="min-w-[300px]">
+                      <SyntaxHighlighter
+                        language={codeLanguage}
+                        style={atomDark}
+                        wrapLongLines
+                        customStyle={{
+                          width: "100%",
+                          overflowX: "auto",
+                          fontSize: "0.875rem"
+                        }}
+                        className="rounded-b-md"
+                      >
+                        {codeContent.trim()}
+                      </SyntaxHighlighter>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="prose dark:prose-invert leading-[200%]">

@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setTheme } from "@/redux/slice/themeSlice";
 import { useState } from "react";
 import { AlertSignOutDialog } from "./AlertSignOutDialog";
+import { CiLogin } from "react-icons/ci";
 
 export const MenuBox = () => {
   const navigate = useNavigate();
@@ -68,8 +69,8 @@ export const MenuBox = () => {
 
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setisAlertSignOutOpen(true)}>
-            <GoSignOut />
-            <span>Sign Out</span>
+            {user ? <GoSignOut /> : <CiLogin />}
+            <span> {user ? "Sign Out" : "Sign In"} </span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

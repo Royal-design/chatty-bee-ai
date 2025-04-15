@@ -11,11 +11,11 @@ import { MdSupportAgent } from "react-icons/md";
 export const AboutPage = () => {
   return (
     <ChatInterface>
-      <div className="max-w-3xl mx-auto p-6 overflow-auto h-full pb-20 scrollbar-hidden">
+      <div className="max-w-3xl mx-auto bg-background h-screen p-6 overflow-auto scrollbar-hidden">
         <h1 className="text-xl font-bold text-primary mb-4">
           About ChattyBee AI 🐝
         </h1>
-        <p className="text-base text-gray-600 mb-6">
+        <p className="text-base text-text-light mb-6">
           Welcome to <span className="font-semibold">ChattyBee AI</span>, your
           intelligent and interactive AI-powered assistant! 🚀 Whether you need
           real-time AI conversations, translations, or text summarization,
@@ -58,19 +58,18 @@ export const AboutPage = () => {
           <h2 className="text-xl font-semibold text-primary mb-4">
             How It Works? 🔧
           </h2>
-          <ul className="text-base text-gray-600 space-y-3">
+          <ul className="text-base text-text-light space-y-3">
             <li>
-              ✅ <strong>Type Your Message:</strong> Start chatting naturally.
+              <strong>Type Your Message:</strong> Start chatting naturally.
             </li>
             <li>
-              ✅ <strong>Choose a Language:</strong> Translate text
-              effortlessly.
+              <strong>Choose a Language:</strong> Translate text effortlessly.
             </li>
             <li>
-              ✅ <strong>Summarize Text:</strong> Get concise insights.
+              <strong>Summarize Text:</strong> Get concise insights.
             </li>
             <li>
-              ✅ <strong>AI-Powered Replies:</strong> Fast and intelligent
+              <strong>AI-Powered Replies:</strong> Fast and intelligent
               responses.
             </li>
           </ul>
@@ -111,10 +110,8 @@ export const AboutPage = () => {
 
         {/* Call to Action */}
         <div className="mt-12">
-          <h2 className="text-xl font-semibold text-gray-800">
-            🌟 Let's Chat!
-          </h2>
-          <p className="text-base text-gray-600 mt-2">
+          <h2 className="text-xl font-semibold text-primary">🌟 Let's Chat!</h2>
+          <p className="text-base text-text-light mt-2">
             ChattyBee AI is here to make your conversations **smarter, easier,
             and more engaging**. Start chatting now and experience the power of
             AI! 🚀

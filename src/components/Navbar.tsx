@@ -20,7 +20,7 @@ export const Navbar = ({ children }: ChildrenProps) => {
   return (
     <div
       className={cn(
-        "z-50  py-1 p-[5px] md:px-8  w-full border-b items-center flex justify-between",
+        "z-50  py-1 p-[6px] md:px-8  w-full border-b items-center flex justify-between",
         "fixed top-0 bg-background transition-[left]",
         isSidebarOpen && !homePage ? "md:pr-75" : "md:left-0 "
       )}

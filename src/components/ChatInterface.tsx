@@ -101,7 +101,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
       onOpenChange={() => dispatch(toggleSidebar())}
     >
       <Sidebar collapsible="offcanvas" className="max-w-md">
-        <SidebarHeader className="md:hidden">
+        <SidebarHeader className="md:hidden bg-background border-b">
           <h2 className="text-lg font-semibold text-center">Chat Menu</h2>
           <div className="">
             <Input
@@ -111,7 +111,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
             />
           </div>
         </SidebarHeader>
-        <SidebarHeader className="md:block hidden">
+        <SidebarHeader className="md:block bg-background border-b hidden">
           <div className="flex justify-end">
             <div className="">
               <SearchDialog groupedChats={filteredChats} />
@@ -188,7 +188,7 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="w-full text-primary border-t px-0 dark:border-slate-800 text-sm">
+        <SidebarFooter className="w-full text-primary border-t px-0 bg-background text-sm">
           <div className="md:hidden flex items-center p-1 gap-6 border-b pb-2 ">
             {user && <MenuBox />}
             <p className="text-base">{user?.name}</p>

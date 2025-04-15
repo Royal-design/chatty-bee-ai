@@ -14,6 +14,7 @@ import { SearchSkeleton } from "./SearchSkeleton";
 import { setActiveChat } from "@/redux/slice/chatSlice";
 import { useAppDispatch } from "@/redux/store";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./ui/button";
 
 interface Message {
   text: string;
@@ -62,16 +63,19 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition duration-200">
-        <BiSearch className="size-6" />
+      <DialogTrigger>
+        <Button asChild variant="ghost" className="transition duration-200">
+          <span>
+            <BiSearch className="size-6 text-primary" />
+          </span>
+        </Button>
       </DialogTrigger>
-
       <DialogContent className="max-h-[90vh] w-[90vw] md:w-[50vw] lg:w-[40vw] overflow-hidden rounded-lg shadow-lg">
         <DialogHeader className="mb-2">
           <DialogTitle className="text-lg font-semibold">
             Search Chats
           </DialogTitle>
-          <DialogDescription className="text-sm text-gray-500">
+          <DialogDescription className="text-sm text-text-light">
             Find a chat by keyword
           </DialogDescription>
         </DialogHeader>
@@ -93,13 +97,13 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
               ))}
             </div>
           ) : Object.keys(filteredChats).length === 0 ? (
-            <p className="text-gray-500 text-center py-4">
+            <p className="text-text-light text-center py-4">
               No matching chats found.
             </p>
           ) : (
             Object.entries(filteredChats).map(([dateLabel, chats]) => (
               <div key={dateLabel} className="space-y-2">
-                <p className="font-semibold text-gray-500">{dateLabel}</p>
+                <p className="font-semibold text-text-light">{dateLabel}</p>
                 <ul className="space-y-2">
                   {chats.map((chat) => (
                     <li
@@ -108,14 +112,14 @@ export const SearchDialog = ({ groupedChats }: SearchDialogProps) => {
                         navigate(`/chats/${chat.id}`);
                       }}
                       key={chat.id}
-                      className="p-3 flex gap-4 items-center border rounded-md cursor-pointer transition duration-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      className="p-3 flex gap-4 items-center border rounded-md cursor-pointer transition-colors duration-200 bg-button-deep-color hover:bg-button-deep-hover-color"
                     >
                       <PiChatsCircle className="size-6 text-primary" />
                       <div>
                         <span className="block font-medium">
                           {chat.messages[0]?.text || "New Chat"}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-text-light">
                           {new Date(chat.timestamp).toLocaleString()}
                         </span>
                       </div>

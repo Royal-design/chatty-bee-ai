@@ -9,10 +9,15 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  --button-deep-color: #ebebeb;
+  --button-deep-hover-color: #e2e2e2;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  --button-color: #e9e9e9;
+  --text-light: #414141;
+  --button-active-color: #c5c4c4;
+  --button-hover-color: #e3e3e3;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -54,6 +59,12 @@
 }
 
 .dark {
+  --text-light: #afaeae;
+  --button-deep-color: #0c0c0c;
+  --button-deep-hover-color: #101010;
+  --button-color: #272727;
+  --button-active-color: #676767;
+  --button-hover-color: #7e7d7d;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
@@ -89,6 +100,12 @@
 }
 
 @theme inline {
+  --color-text-light: var(--text-light);
+  --color-button-color: var(--button-color);
+  --color-button-deep-color: var(--button-deep-color);
+  --color-button-deep-hover-color: var(--button-deep-hover-color);
+  --color-button-active-color: var(--button-active-color);
+  --color-button-hover-color: var(--button-hover-color);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

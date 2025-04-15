@@ -16,8 +16,8 @@ export const HomePage = () => {
         <div className="w-full flex justify-center  ">
           <div className="w-2xl">
             <TextInput />
-            <div className="grid mt-4 grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4 w-full">
-              <Button className="text-xs rounded-3xl p-3 h-4 ">
+            <div className="flex justify-center mt-4  gap-4 w-full">
+              <Button className="text-xs rounded-3xl p-3 h-4">
                 Make a plan
               </Button>
               <Button className="text-xs rounded-3xl p-3 h-4 ">

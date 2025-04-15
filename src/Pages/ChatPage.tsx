@@ -55,7 +55,7 @@ export const ChatPage = () => {
                   <div className=" mt-4 flex justify-center  gap-2 w-full">
                     <Button
                       onClick={() => handleClick("make a life goal plan")}
-                      className="text-xs rounded-3xl p-3 h-4 "
+                      className="text-xs rounded-3xl p-3 h-4"
                     >
                       Make a plan
                     </Button>

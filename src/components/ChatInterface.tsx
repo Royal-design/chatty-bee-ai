@@ -101,21 +101,22 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
       onOpenChange={() => dispatch(toggleSidebar())}
     >
       <Sidebar collapsible="offcanvas" className="max-w-md">
-        <SidebarHeader className="border-b dark:border-slate-800 md:hidden">
+        <SidebarHeader className="md:hidden">
           <h2 className="text-lg font-semibold text-center">Chat Menu</h2>
+          <div className="">
+            <Input
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </SidebarHeader>
-        <SidebarHeader className="border-b dark:border-slate-800">
+        <SidebarHeader className="md:block hidden">
           <div className="flex justify-end">
-            <div className="md:block hidden">
+            <div className="">
               <SearchDialog groupedChats={filteredChats} />
             </div>
-            <div className="md:hidden">
-              <Input
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+
             <Button
               onClick={() => dispatch(createNewChat())}
               variant="ghost"
@@ -137,18 +138,22 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
                     ))}
                   </div>
                 ) : Object.keys(filteredChats).length === 0 ? (
-                  <p className="text-gray-500 p-4">No matching chats found.</p>
+                  <p className="text-text-light p-4">
+                    No matching chats found.
+                  </p>
                 ) : (
                   Object.entries(filteredChats).map(([dateLabel, chats]) => (
                     <div key={dateLabel}>
-                      <p className="font-semibold text-gray-500">{dateLabel}</p>
+                      <p className="font-semibold mb-2 text-text-light">
+                        {dateLabel}
+                      </p>
                       <div className="flex flex-col gap-2">
                         {chats.map((chat) => (
                           <SidebarMenuItem
                             key={chat.id}
-                            className={`flex flex-col hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition ${
+                            className={`flex flex-col bg-button-color hover:bg-button-hover-color rounded transition-colors ${
                               activeChatId === chat.id
-                                ? "bg-gray-200 dark:bg-gray-700"
+                                ? "bg-button-active-color hover:bg-button-active-color"
                                 : ""
                             }`}
                           >
@@ -184,13 +189,13 @@ export const ChatInterface = ({ children }: { children: ReactNode }) => {
         </SidebarContent>
 
         <SidebarFooter className="w-full text-primary border-t px-0 dark:border-slate-800 text-sm">
-          <div className="md:hidden flex items-center p-1 border-b pb-2 justify-between">
-            <p>ChattyBee AI</p>
+          <div className="md:hidden flex items-center p-1 gap-6 border-b pb-2 ">
             {user && <MenuBox />}
+            <p className="text-base">{user?.name}</p>
           </div>
 
           <p className="text-center text-sm">
-            &copy; Emmanuel {new Date().getFullYear()}
+            &copy; Emmanuel {new Date().getFullYear()} - ChattyBee-AI
           </p>
         </SidebarFooter>
       </Sidebar>

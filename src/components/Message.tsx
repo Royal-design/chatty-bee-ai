@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { setIsTyping } from "@/redux/slice/chatSlice";
 import { PiSpeakerHighLight } from "react-icons/pi";
 import { HiOutlineStopCircle } from "react-icons/hi2";
+import { cn } from "@/lib/utils";
 
 interface MessageType {
   image?: string;
@@ -33,7 +34,6 @@ interface MessageProps {
 
 export const Message = ({ message }: MessageProps) => {
   const [copied, setCopied] = useState(false);
-  const [showFormatted, setShowFormatted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -92,23 +92,31 @@ export const Message = ({ message }: MessageProps) => {
     <div ref={messageRef} className="w-full">
       {/* User Message with Image */}
       {message.type === "user" && message.image && (
-        <div className="flex justify-end mb-1">
+        <div className="flex w-full justify-end mb-1">
           <img
             src={message.image}
             alt="image"
-            className="w-[60%] object-contain md:w-sm rounded-md"
+            className="w-full max-w-[75%] object-contain md:max-w-xs rounded-md"
           />
         </div>
       )}
 
       {/* User Message */}
       {message.type === "user" && (
-        <div className="flex justify-end">
-          <Card className="shadow-sm py-0 rounded-2xl md:max-w-md max-w-[80%] ">
-            <CardContent className="px-5 py-2">
-              <p>{message.text}</p>
-            </CardContent>
-          </Card>
+        <div className="flex justify-end w-full">
+          <div className="w-fit max-w-[90%] md:max-w-[60%] lg:max-w-[70%] leading-[200%] break-words">
+            <Card
+              className={cn(
+                "shadow-sm py-0 rounded-2xl",
+                message.text.length === 0 &&
+                  "shadow-none, rounded-none border-none"
+              )}
+            >
+              <CardContent className="px-5 py-2">
+                <p>{message.text}</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
       {message.type === "ai" && (
@@ -121,7 +129,7 @@ export const Message = ({ message }: MessageProps) => {
             alt="AI"
             className="size-7 rounded-full border p-1"
           />
-          <Card className="shadow-none py-0 rounded-2xl border-none max-w-2xl">
+          <Card className="shadow-none py-0 rounded-2xl border-none md:w-md lg:w-full">
             <CardContent className="px-4 py-1">
               {isCode ? (
                 <div className="relative flex flex-col">
@@ -159,7 +167,7 @@ export const Message = ({ message }: MessageProps) => {
                 </div>
               ) : (
                 <div className="prose dark:prose-invert leading-[200%]">
-                  {isLastAiMessage && !showFormatted ? (
+                  {isLastAiMessage && isTyping ? (
                     <TypeAnimation
                       key={message.text}
                       sequence={[
@@ -169,7 +177,6 @@ export const Message = ({ message }: MessageProps) => {
                         message.text,
                         () => {
                           dispatch(setIsTyping(false));
-                          setShowFormatted(true);
                         }
                       ]}
                       speed={99}

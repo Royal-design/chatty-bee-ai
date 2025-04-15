@@ -16,15 +16,22 @@ export const ChatMessage = ({
   scrollToBottom,
   showScrollButton
 }: ChatMessageProps) => {
-  const isSidebarOpen = useAppSelector((state) => state.chat.isSidebarOpen);
+  const { isSidebarOpen, aiLoading } = useAppSelector((state) => state.chat);
 
   return (
-    <div className="flex flex-col w-full pb-[20rem] pt-[4rem]  gap-8">
+    <div className="flex flex-col w-full pb-[12rem] pt-[4rem]  gap-8">
       {messages.map((message) => (
         <div key={message.id}>
           <Message message={message} />
         </div>
       ))}
+      {aiLoading && (
+        <div className="flex justify-center mt-2">
+          <p className="text-sm text-text-light animate-pulse">
+            AI is thinking...
+          </p>
+        </div>
+      )}
       {showScrollButton && (
         <Button
           onClick={scrollToBottom}

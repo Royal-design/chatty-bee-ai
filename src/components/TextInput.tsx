@@ -7,18 +7,24 @@ import { Textarea } from "./ui/textarea";
 import { RiAddLine, RiArrowUpLine } from "react-icons/ri";
 import { inputSchema, InputSchema } from "@/schema/inputSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { generateAIResponse, generateAISuggestions } from "@/Api/model";
+import {
+  cancelCurrentAIResponse,
+  generateAIResponse,
+  generateAISuggestions
+} from "@/Api/model";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { BsSoundwave } from "react-icons/bs";
 import {
   addMessage,
   resetClearInput,
   setAiLoading,
-  setSuggestions
+  setSuggestions,
+  stopGenerating
 } from "@/redux/slice/chatSlice";
-import { PiWaveformBold } from "react-icons/pi";
 import { BsFillStopFill } from "react-icons/bs";
 import { toast } from "sonner";
 import { IoIosClose } from "react-icons/io";
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 
 const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_KEY;
 
@@ -31,6 +37,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   const { model, isTyping, clearInput, aiLoading, activeChatId } =
     useAppSelector((state) => state.chat);
 
+  const [isListening, setIsListening] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
   const [imageBase64, setImageBase64] = useState<string | undefined>(undefined);
@@ -56,6 +63,35 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
   useEffect(() => {
     textInputRef.current?.focus();
   }, [activeChatId]);
+
+  const startListening = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      toast.warning("Your browser does not support speech recognition.");
+      return;
+    }
+
+    const recognition = new (window as any).webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event: any) => {
+      const spokenText = event.results[0][0].transcript;
+
+      const currentText = form.getValues("text");
+      form.setValue("text", currentText + " " + spokenText);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error", event.error);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+  };
 
   const textValue = form.watch("text") || "";
 
@@ -189,7 +225,7 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                       field.ref(el);
                       textInputRef.current = el;
                     }}
-                    className="resize-none overflow-y-auto scrollbar-hidden w-full  border-none rounded-md"
+                    className="resize-none overflow-y-auto scrollbar-hidden w-full border-none rounded-md"
                     onChange={(e) => {
                       const el = e.target;
                       el.style.height = "auto";
@@ -223,29 +259,49 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
           />
 
           {/* Add Image Button */}
-          <Button
-            className="rounded-full border bg-background hover:bg-transparent shrink-0 size-9"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-          >
-            {uploading ? "⏳" : <RiAddLine className="size-5 text-primary" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="rounded-full border bg-background hover:bg-transparent shrink-0 size-9"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+            >
+              {uploading ? "⏳" : <RiAddLine className="size-5 text-primary" />}
+            </Button>
+            {/* voice */}
+            <Button
+              type="button"
+              onClick={startListening}
+              className="bg-background rounded-full border   size-9 hover:bg-transparent text-primary"
+            >
+              {isListening ? (
+                <FaMicrophoneSlash size={16} />
+              ) : (
+                <FaMicrophone size={16} />
+              )}
+            </Button>
+          </div>
 
           {/* Send Message Button */}
+
           <Button
             className="border-none rounded-full border shrink-0 size-9"
             type="submit"
-            disabled={
-              form.formState.isSubmitting || (!textValue.trim() && !imageBase64)
+            onClick={() => {
+              if (isTyping || aiLoading) {
+                dispatch(stopGenerating());
+                cancelCurrentAIResponse();
+              }
+            }}
+            aria-label={
+              isTyping || aiLoading ? "Stop Generation" : "Send Message"
             }
-            aria-label="Send Message"
           >
             {isTyping || aiLoading ? (
               <BsFillStopFill className="size-5" />
             ) : textValue.trim().length > 0 || imageUrl ? (
               <RiArrowUpLine className="size-5 font-bold" />
             ) : (
-              <PiWaveformBold className="size-5 font-bold" />
+              <BsSoundwave strokeWidth={0.4} className="size-5" />
             )}
           </Button>
         </div>

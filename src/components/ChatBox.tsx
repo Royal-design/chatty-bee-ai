@@ -6,8 +6,9 @@ import { SuggestionBox } from "./SuggestionBox";
 import { cn } from "@/lib/utils";
 
 export const ChatBox = () => {
-  const { chats, activeChatId, isSidebarOpen, aiLoading, reloadMessages } =
-    useAppSelector((state) => state.chat);
+  const { chats, activeChatId, isSidebarOpen, reloadMessages } = useAppSelector(
+    (state) => state.chat
+  );
 
   const activeChat =
     chats.find((chat) => chat.id === activeChatId) || chats[0] || null;
@@ -57,26 +58,23 @@ export const ChatBox = () => {
   }, [reloadMessages]);
 
   return (
-    <div className="h-full w-full ">
+    <div className="h-full w-full flex flex-col ">
       {messages.length > 0 ? (
         <div
           ref={chatContainerRef}
           className="pt-2 h-full px-4 overflow-auto w-full mb-4 flex justify-center scrollbar-hidden"
         >
-          <div className="md:w-xl lg:w-2xl   w-full">
+          <div
+            className={cn(
+              "md:w-full lg:w-2xl w-full",
+              isSidebarOpen ? "md:w-full" : "md:w-xl"
+            )}
+          >
             <ChatMessage
               messages={messages}
               scrollToBottom={scrollToBottom}
               showScrollButton={showScrollButton}
             />
-
-            {aiLoading && (
-              <div className="flex justify-center mt-2">
-                <p className="text-sm text-gray-500 animate-pulse">
-                  AI is thinking...
-                </p>
-              </div>
-            )}
           </div>
         </div>
       ) : (
@@ -88,10 +86,15 @@ export const ChatBox = () => {
       <div
         className={cn(
           "pb-[2rem] bg-background  fixed bottom-0 w-full transition-[left] duration-200 px-4 flex flex-col items-center justify-center",
-          isSidebarOpen ? " md:left-35" : "md:left-0"
+          isSidebarOpen ? "md:left-32 lg:left-35" : "md:left-0"
         )}
       >
-        <div className="md:w-xl lg:w-2xl  w-full">
+        <div
+          className={cn(
+            isSidebarOpen ? "md:w-lg" : "md:w-xl",
+            "lg:w-2xl w-full"
+          )}
+        >
           <TextInput scrollToBottom={scrollToBottom} />
           <SuggestionBox />
         </div>

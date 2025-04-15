@@ -3,6 +3,14 @@ import { genAI } from "../Api/api";
 
 type AIInput = string | { base64: string; mimeType: string };
 
+// For tracking current generation request
+let currentGenerationId: string | null = null;
+
+// Cancel AI generation manually
+export function cancelCurrentAIResponse() {
+  currentGenerationId = null;
+}
+
 // Function to generate real-time suggestions while typing
 export async function generateAISuggestions(
   input: string,
@@ -26,7 +34,6 @@ export async function generateAISuggestions(
       throw new Error("Failed to generate suggestions.");
     }
 
-    // Ensure suggestions are complete sentences
     const suggestions =
       result.response
         .text()
@@ -45,6 +52,9 @@ export async function generateAIResponse(
   input: AIInput,
   modelName: string = "gemini-2.0-flash"
 ): Promise<string> {
+  const generationId = Date.now().toString();
+  currentGenerationId = generationId;
+
   try {
     const model = genAI.getGenerativeModel({ model: modelName });
 
@@ -87,6 +97,11 @@ export async function generateAIResponse(
       requestPrompt,
       ...inputParts
     ]);
+
+    // Cancelled during wait? Ignore result
+    if (currentGenerationId !== generationId) {
+      return "";
+    }
 
     if (!result?.response?.text) {
       throw new Error("Unexpected response format from AI.");

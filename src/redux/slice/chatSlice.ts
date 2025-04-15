@@ -261,6 +261,10 @@ export const chatSlice = createSlice({
 
     toggleSidebar: (state) => {
       state.isSidebarOpen = !state.isSidebarOpen;
+    },
+    stopGenerating: (state) => {
+      state.aiLoading = false;
+      state.isTyping = false;
     }
   }
 });
@@ -280,6 +284,7 @@ export const {
   clearInput,
   resetClearInput,
   setIsTyping,
-  toggleSidebar
+  toggleSidebar,
+  stopGenerating
 } = chatSlice.actions;
 export default chatSlice.reducer;

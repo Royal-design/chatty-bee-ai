@@ -225,10 +225,10 @@ export const TextInput: React.FC<TextInputProps> = ({ scrollToBottom }) => {
                       field.ref(el);
                       textInputRef.current = el;
                     }}
-                    className="resize-none overflow-y-auto scrollbar-hidden w-full border-none rounded-md"
+                    className="resize-none overflow-y-auto h-[2rem] min-h-[3rem] scrollbar-hidden w-full border-none rounded-md"
                     onChange={(e) => {
                       const el = e.target;
-                      el.style.height = "auto";
+                      el.style.height = "2rem";
                       el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
                       field.onChange(e);
                       handleInputChange(e.target.value);

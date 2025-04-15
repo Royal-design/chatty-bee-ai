@@ -109,7 +109,7 @@ export const Message = ({ message }: MessageProps) => {
       {/* User Message */}
       {message.type === "user" && (
         <div className="flex justify-end w-full">
-          <div className="w-fit max-w-[90%] md:max-w-[60%] lg:max-w-[70%] leading-[200%] break-words">
+          <div className="w-fit max-w-[90%] md:max-w-[60%] lg:max-w-[70%] leading-[170%] break-words">
             <Card
               className={cn(
                 "shadow-sm py-0 rounded-2xl",

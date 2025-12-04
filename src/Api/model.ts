@@ -14,7 +14,7 @@ export function cancelCurrentAIResponse() {
 // Function to generate real-time suggestions while typing
 export async function generateAISuggestions(
   input: string,
-  modelName: string = "gemini-2.0-flash"
+  modelName: string = "gemini-2.5-flash-lite"
 ): Promise<string[]> {
   try {
     if (!input.trim()) return [];
@@ -68,8 +68,8 @@ export async function generateAIResponse(
       inputParts.push({
         inlineData: {
           data: input.base64,
-          mimeType: input.mimeType
-        }
+          mimeType: input.mimeType,
+        },
       });
 
       requestPrompt = `
@@ -95,7 +95,7 @@ export async function generateAIResponse(
     const result = await model.generateContent([
       systemPrompt,
       requestPrompt,
-      ...inputParts
+      ...inputParts,
     ]);
 
     // Cancelled during wait? Ignore result

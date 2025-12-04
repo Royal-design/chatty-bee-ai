@@ -5,30 +5,31 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "./ui/select";
 
 const models = [
   {
+    id: 6,
+    model: "gemini-2.5-flash-lite",
+    name: "Gemini 2.5 Flash Lite",
+  },
+  {
+    id: 7,
+    model: "gemini-2.5-flash",
+    name: "Gemini 2.5 Flash",
+  },
+
+  {
     id: 1,
     model: "gemini-2.0-flash",
-    name: "Gemini 2.0 Flash"
+    name: "Gemini 2.0 Flash",
   },
   {
     id: 2,
     model: "gemini-2.0-flash-lite",
-    name: "Gemini 2.0 Flash Lite"
+    name: "Gemini 2.0 Flash Lite",
   },
-  {
-    id: 3,
-    model: "gemini-1.5-flash",
-    name: "Gemini 1.5 Flash"
-  },
-  {
-    id: 4,
-    model: "gemini-1.5-flash-8b",
-    name: "Gemini 1.5 Flash 8b"
-  }
 ];
 export const SelectModel = () => {
   const dispatch = useAppDispatch();

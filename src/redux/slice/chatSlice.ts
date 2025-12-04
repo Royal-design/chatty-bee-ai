@@ -60,7 +60,7 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       reloadMessages: false,
       lastUserMessage: null,
       isTyping: false,
-      isSidebarOpen: true
+      isSidebarOpen: true,
     };
   } catch (error) {
     console.error("Error loading chats:", error);
@@ -75,7 +75,7 @@ const loadChatsFromStorage = (userId: string | null): ChatState => {
       reloadMessages: false,
       lastUserMessage: null,
       isTyping: false,
-      isSidebarOpen: true
+      isSidebarOpen: true,
     };
   }
 };
@@ -105,7 +105,7 @@ const generateMessageId = (messages: MessageProps[]): number =>
 const initialState: ChatState = {
   chats: [],
   activeChatId: null,
-  model: "gemini-2.0-flash",
+  model: "gemini-2.5-flash-lite",
   error: null,
   loading: false,
   aiLoading: false,
@@ -113,7 +113,7 @@ const initialState: ChatState = {
   reloadMessages: false,
   lastUserMessage: null,
   isTyping: false,
-  isSidebarOpen: true
+  isSidebarOpen: true,
 };
 
 export const chatSlice = createSlice({
@@ -133,7 +133,7 @@ export const chatSlice = createSlice({
       const newChat: Chat = {
         id: generateChatId(),
         messages: [],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       state.chats.unshift(newChat);
       state.activeChatId = newChat.id;
@@ -161,7 +161,7 @@ export const chatSlice = createSlice({
         const newChat: Chat = {
           id: generateChatId(),
           messages: [],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
         state.chats.unshift(newChat);
         state.activeChatId = newChat.id;
@@ -175,7 +175,7 @@ export const chatSlice = createSlice({
         text: action.payload.text,
         image: action.payload.image || undefined,
         type: action.payload.type,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       if (action.payload.type === "user") {
@@ -229,7 +229,7 @@ export const chatSlice = createSlice({
           id: generateMessageId(chat.messages),
           text: action.payload,
           type: "ai",
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
 
@@ -265,8 +265,8 @@ export const chatSlice = createSlice({
     stopGenerating: (state) => {
       state.aiLoading = false;
       state.isTyping = false;
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -285,6 +285,6 @@ export const {
   resetClearInput,
   setIsTyping,
   toggleSidebar,
-  stopGenerating
+  stopGenerating,
 } = chatSlice.actions;
 export default chatSlice.reducer;
